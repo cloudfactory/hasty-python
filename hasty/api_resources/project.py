@@ -9,11 +9,13 @@ endpoint = '/v1/projects'
 class Project:
     
     @staticmethod
-    def list():
-        return api_requestor.get(endpoint)
+    def list(API_class):
+        return api_requestor.get(API_class, endpoint)
 
     @staticmethod
-    def create(project_name, description):
-        return api_requestor.post(endpoint,
-                                  json_data={'project_name': project_name,
-                                             'description': description})
+    def create(API_class, project_name, description):
+        return api_requestor.post(API_class, endpoint,
+            json_data= {
+                'project_name': project_name,
+                'description': description
+                })
