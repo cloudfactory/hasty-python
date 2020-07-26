@@ -20,7 +20,7 @@ class Project:
     def fetch_all(API_class):
         tot = []
         n = Project.get_total_items(API_class)
-        for offset in range(0, n, 100):
+        for offset in range(0, n+1, 100):
             tot += Project.list(API_class, offset=offset)['items']
         return tot
 
@@ -33,5 +33,5 @@ class Project:
                 })
     
     @staticmethod
-    def get_total_items(API_class, project_id):
+    def get_total_items(API_class):
         return Project.list(API_class, limit=0)['meta']['total']
