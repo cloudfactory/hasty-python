@@ -26,11 +26,11 @@ class Project:
 
     @staticmethod
     def create(API_class, project_name, description):
-        return api_requestor.post(API_class, endpoint,
-            json_data= {
-                'project_name': project_name,
-                'description': description
-                })
+        json_data= {
+            'project_name': project_name,
+            'description': description
+        }
+        return api_requestor.post(API_class, endpoint, json_data=json_data)
     
     @staticmethod
     def get_total_items(API_class):

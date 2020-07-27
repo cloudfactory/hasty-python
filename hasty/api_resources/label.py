@@ -5,7 +5,6 @@ from .. import api_requestor
 
 endpoint_project = '/v1/projects/{project_id}/labels'
 endpoint_image = '/v1/projects/{project_id}/images/{image_id}/labels'
-label_attribute_endpoint = '/v1/projects/{project_id}/labels/{label_id}/attributes'
 
 
 class Label:
@@ -48,7 +47,6 @@ class Label:
 
     @staticmethod
     def copy(API_class, project_id, item_to_copy, image_mapping, label_class_mapping):
-        # print(item_to_copy, class_name_id[class_id_name[item_to_copy['class_id']]])
         json_data = [{
             'class_id': label_class_mapping[item_to_copy['class_id']],
             'bbox': item_to_copy['bbox'],
@@ -62,7 +60,7 @@ class Label:
 
     @staticmethod
     def delete_batch(API_class, project_id, image_id, label_ids):
-        if isinstance(label_ids, int):
+        if isinstance(label_ids, int): # if a single ID value is gived, transform it into a list
             label_ids = [label_ids]
         return api_requestor.delete(API_class, endpoint_image.format(project_id=project_id, image_id=image_id),
                                     json_data={'labels': [{'label_id': label_id} for label_id in label_ids]})
@@ -71,13 +69,3 @@ class Label:
     def get_total_items(API_class, project_id):
         return Label.list_project(API_class, project_id, limit=0)['meta']['total']
 
-
-class LabelAttribute:
-    # TODO: redo and test this class
-
-    @staticmethod
-    def set(API_class, project_id, label_id, attribute_id, value):
-        set_endpoint = f'{label_attribute_endpoint}/{attribute_id}'
-        return api_requestor.post(API_class, set_endpoint.format(project_id=project_id, label_id=label_id,
-                                                      attribute_id=set_endpoint), 
-                                                      json_data={'value': value})

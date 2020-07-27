@@ -1,5 +1,4 @@
-from . import Dataset, Image, Label, LabelClass
-
+from . import Dataset, Image, Label, LabelClass, LabelAttribute, LabelClassAttribute
 
 class Utils:
 
@@ -18,7 +17,7 @@ class Utils:
     @staticmethod
     def copy_label_classes(API_class_src, API_class_dst, project_id_src, project_id_dst):
         '''
-        copy every label_class in a project to an other
+        copy every label class in a project to an other
         '''
         label_classes = LabelClass.fetch_all(API_class_src, project_id_src)
         label_class_mapping = {}
@@ -27,6 +26,18 @@ class Utils:
             label_class_mapping[label_class['id']] = ret['id']
         return label_class_mapping
 
+    @staticmethod
+    def copy_attribute_classes(API_class_src, API_class_dst, project_id_src, project_id_dst):
+        '''
+        copy every attribute class in a project to an other
+        '''
+        attribute_classes = LabelClassAttribute.fetch_all(API_class_src, project_id_src)
+        attribute_class_mapping = {}
+        for attribute_class in attribute_classes:
+            ret = LabelClassAttribute.copy(API_class_dst, project_id_dst, attribute_class)
+            attribute_class_mapping[attribute_class['id']] = ret['id']
+        return attribute_class_mapping
+        
     @staticmethod
     def copy_datasets(API_class_src, API_class_dst, project_id_src, project_id_dst):
         '''
@@ -51,7 +62,12 @@ class Utils:
             label_mapping[label['id']] = ret['id']
         return label_mapping
 
-    #TODO: add attributes
+    #TODO: add label attributes
+    def copy_labels_attribute(API_class_src, API_class_dst, project_id_src, project_id_dst):
+        '''
+        copy every label attribute in a project to an other
+        '''
+        return
 
     @staticmethod
     def copy_project(API_class_src, API_class_dst, project_id_src, project_id_dst):
