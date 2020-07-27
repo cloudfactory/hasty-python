@@ -20,7 +20,7 @@ class LabelAttribute:
         tot = []
         n = LabelAttribute.get_total_items(API_class, project_id, label_id)
         for offset in range(0, n+1, 100):
-            tot += LabelAttribute.list(API_class, project_id, label_id, offset=offset)
+            tot += LabelAttribute.list(API_class, project_id, label_id, offset=offset)['items']
         return tot
 
     @staticmethod
