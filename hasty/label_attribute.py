@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
-from .. import api_requestor
+from . import api_requestor
+
 
 class LabelAttribute:
     endpoint = '/v1/projects/{project_id}/labels/{label_id}/attributes'

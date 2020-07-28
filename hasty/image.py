@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 import os
 
-from .. import api_requestor
+from . import api_requestor
 
 
 

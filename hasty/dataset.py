@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
-from .. import api_requestor
+from . import api_requestor
 
 
 class Dataset:
