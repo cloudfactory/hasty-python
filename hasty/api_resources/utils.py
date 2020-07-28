@@ -110,7 +110,7 @@ class Utils:
         for label_attribute in label_attributes:
             label_id = label_attribute[0]
             for item_to_copy in label_attribute[label_id]:
-                ret = LabelAttribute.copy(API_class_dst, project_id_dst, label_id, item_to_copy, attribute_class_mapping)
+                LabelAttribute.copy(API_class_dst, project_id_dst, label_id, item_to_copy, attribute_class_mapping)
         return
 
     @staticmethod
