@@ -3,17 +3,18 @@ import os
 
 from .. import api_requestor
 
-endpoint = '/v1/projects/{project_id}/images'
 
 
 class Image:
+    endpoint = '/v1/projects/{project_id}/images'
+
     @staticmethod
     def list(API_class, project_id, offset=0, limit=100):
         json_data = {
             'offset': offset,
             'limit': limit
         }
-        return api_requestor.get(API_class, endpoint.format(project_id=project_id), json_data=json_data)
+        return api_requestor.get(API_class, Image.endpoint.format(project_id=project_id), json_data=json_data)
 
     @staticmethod
     def fetch_all(API_class, project_id):
@@ -29,7 +30,7 @@ class Image:
             'url': image_url,
             'dataset_id': dataset_id
         }
-        return api_requestor.post(API_class, endpoint.format(project_id=project_id),
+        return api_requestor.post(API_class, Image.endpoint.format(project_id=project_id),
                                   json_data=json_data)
     
     @staticmethod
@@ -40,7 +41,7 @@ class Image:
             'filename': item_to_copy['name'],
             'url': item_to_copy['public_url'],
         }
-        return api_requestor.post(API_class, endpoint.format(project_id=project_id), json_data=json_data)
+        return api_requestor.post(API_class, Image.endpoint.format(project_id=project_id), json_data=json_data)
 
     @staticmethod
     def get_total_items(API_class, project_id):

@@ -2,9 +2,9 @@ from __future__ import absolute_import, division, print_function
 
 from .. import api_requestor
 
-endpoint = '/v1/workspaces'
 
 class Workspace:
+    endpoint = '/v1/workspaces'
 
     @staticmethod
     def list(API_class, offset=0, limit=100):
@@ -12,7 +12,7 @@ class Workspace:
             'offset': offset,
             'limit': limit
         }
-        return api_requestor.get(API_class, endpoint, json_data=json_data)
+        return api_requestor.get(API_class, Workspace.endpoint, json_data=json_data)
     
     @staticmethod
     def fetch_all(API_class):
@@ -31,11 +31,11 @@ class Workspace:
             'description': description,
             'background_color': color
         }
-        return api_requestor.post(API_class, endpoint, json_data=json_data)
+        return api_requestor.post(API_class, Workspace.endpoint, json_data=json_data)
 
     @staticmethod
     def delete(API_class, workspace_id):
-        del_endpoint = f'{endpoint}/{workspace_id}'
+        del_endpoint = f'{Workspace.endpoint}/{workspace_id}'
         return api_requestor.delete(API_class, del_endpoint)
 
     @staticmethod

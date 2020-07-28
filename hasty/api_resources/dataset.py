@@ -3,10 +3,9 @@ from __future__ import absolute_import, division, print_function
 from .. import api_requestor
 
 
-endpoint = '/v1/projects/{project_id}/datasets'
-endpoint_delete = '/v1/projects/{project_id}/datasets/{dataset_id}'
-
 class Dataset:
+    endpoint = '/v1/projects/{project_id}/datasets'
+    endpoint_delete = '/v1/projects/{project_id}/datasets/{dataset_id}'
 
     @staticmethod
     def list(API_class, project_id, offset=0, limit=100):
@@ -14,7 +13,7 @@ class Dataset:
             'offset': offset,
             'limit': limit
         }
-        return api_requestor.get(API_class, endpoint.format(project_id=project_id), json_data=json_data)
+        return api_requestor.get(API_class, Dataset.endpoint.format(project_id=project_id), json_data=json_data)
 
     @staticmethod
     def fetch_all(API_class, project_id):
@@ -31,7 +30,7 @@ class Dataset:
             'name': name,
             'norder': norder
         }
-        return api_requestor.post(API_class, endpoint.format(project_id=project_id),
+        return api_requestor.post(API_class, Dataset.endpoint.format(project_id=project_id),
                                   json_data=json_data)
 
     @staticmethod
@@ -41,11 +40,11 @@ class Dataset:
             'name': item_to_copy['name'],
             'norder': item_to_copy['norder']
         }
-        return api_requestor.post(API_class, endpoint.format(project_id=project_id), json_data=json_data)
+        return api_requestor.post(API_class, Dataset.endpoint.format(project_id=project_id), json_data=json_data)
 
     @staticmethod
     def delete(API_class, project_id, dataset_id):
-        return api_requestor.delete(API_class, endpoint_delete.format(project_id=project_id, dataset_id=dataset_id))
+        return api_requestor.delete(API_class, Dataset.endpoint_delete.format(project_id=project_id, dataset_id=dataset_id))
     
     @staticmethod
     def delete_all(API_class, project_id):

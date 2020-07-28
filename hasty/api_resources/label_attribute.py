@@ -2,10 +2,9 @@ from __future__ import absolute_import, division, print_function
 
 from .. import api_requestor
 
-label_attribute_endpoint = '/v1/projects/{project_id}/labels/{label_id}/attributes'
-set_label_attribute_endpoint = '/v1/projects/{project_id}/labels/{label_id}/attributes/{attribute_id}'
-
 class LabelAttribute:
+    endpoint = '/v1/projects/{project_id}/labels/{label_id}/attributes'
+    set_endpoint = '/v1/projects/{project_id}/labels/{label_id}/attributes/{attribute_id}'
 
     @staticmethod
     def list(API_class, project_id, label_id, offset=0, limit=100):
@@ -13,7 +12,7 @@ class LabelAttribute:
             'offset': offset,
             'limit': limit
         }
-        return api_requestor.get(API_class, label_attribute_endpoint.format(project_id=project_id, label_id=label_id), json_data=json_data)
+        return api_requestor.get(API_class, LabelAttribute.endpoint.format(project_id=project_id, label_id=label_id), json_data=json_data)
 
     @staticmethod
     def fetch_all(API_class, project_id, label_ids):
@@ -31,7 +30,7 @@ class LabelAttribute:
         json_data = {
             'value': value
         }
-        return api_requestor.post(API_class, set_label_attribute_endpoint.format(project_id=project_id, label_id=label_id, attribute_id=attribute_id), json_data=json_data)
+        return api_requestor.post(API_class, LabelAttribute.set_endpoint.format(project_id=project_id, label_id=label_id, attribute_id=attribute_id), json_data=json_data)
 
     @staticmethod
     def copy(API_class, project_id, label_id, attribute_class_mapping, item_to_copy):
@@ -39,7 +38,7 @@ class LabelAttribute:
             'value': item_to_copy['value']
         }
         attribute_id = attribute_class_mapping[item_to_copy['id']]
-        return api_requestor.post(API_class, set_label_attribute_endpoint.format(project_id=project_id, label_id=label_id, attribute_id=attribute_id), json_data=json_data)
+        return api_requestor.post(API_class, LabelAttribute.set_endpoint.format(project_id=project_id, label_id=label_id, attribute_id=attribute_id), json_data=json_data)
 
     @staticmethod
     def get_total_items(API_class, project_id, label_id):

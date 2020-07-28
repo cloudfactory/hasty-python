@@ -2,10 +2,10 @@ from __future__ import absolute_import, division, print_function
 
 from .. import api_requestor
 
-attributes_endpoint = '/v1/projects/{project_id}/attributes'
 
 
 class LabelClassAttribute:
+    endpoint = '/v1/projects/{project_id}/attributes'
 
     @staticmethod
     def list(API_class, project_id, offset=0, limit=100):
@@ -13,7 +13,7 @@ class LabelClassAttribute:
             'offset': offset,
             'limit': limit
         }
-        return api_requestor.get(API_class, attributes_endpoint.format(project_id=project_id), json_data=json_data)
+        return api_requestor.get(API_class, LabelClassAttribute.endpoint.format(project_id=project_id), json_data=json_data)
 
     @staticmethod
     def fetch_all(API_class, project_id):
@@ -25,7 +25,7 @@ class LabelClassAttribute:
 
     @staticmethod
     def create(API_class, project_id, attribute_name, attribute_type, description=None, default=None, min=None, max=None):
-        return api_requestor.post(API_class, attributes_endpoint.format(project_id=project_id),
+        return api_requestor.post(API_class, LabelClassAttribute.endpoint.format(project_id=project_id),
             json_data= {
                 'name': attribute_name,
                 'type': attribute_type,
@@ -46,7 +46,7 @@ class LabelClassAttribute:
             'min': item_to_copy['min'],
             'max': item_to_copy['max']
         }
-        return api_requestor.post(API_class, attributes_endpoint.format(project_id=project_id), json_data=json_data)
+        return api_requestor.post(API_class, LabelClassAttribute.endpoint.format(project_id=project_id), json_data=json_data)
 
     @staticmethod
     def get_total_items(API_class, project_id):
