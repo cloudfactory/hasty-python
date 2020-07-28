@@ -26,11 +26,14 @@ class Label:
         return api_requestor.get(API_class, endpoint_image.format(project_id=project_id, image_id=image_id), json_data=json_data)
 
     @staticmethod
-    def fetch_all(API_class, project_id):
+    def fetch_all(API_class, project_id, image_mapping):
         tot = []
         n = Label.get_total_items(API_class, project_id)
-        for offset in range(0, n+1, 100):
-            tot += Label.list_project(API_class, project_id, offset=offset)['items']
+        for image_id in image_mapping:
+            image_labs = []
+            for offset in range(0, n+1, 100):
+                image_labs += Label.list_image(API_class, project_id, image_id, offset=offset)['items']
+            tot += image_labs
         return tot
 
     @staticmethod

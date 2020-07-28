@@ -94,14 +94,13 @@ class Utils:
         '''
         copy every label in a project to an other
         '''
-        labels = Label.fetch_all(API_class_src, project_id_src)
+        labels = Label.fetch_all(API_class_src, project_id_src, image_mapping)
         label_mapping = {}
         for label in labels:
             ret = Label.copy(API_class_dst, project_id_dst, label, image_mapping, label_class_mapping)
             label_mapping[label['id']] = ret['id']
         return label_mapping
 
-    #TODO: add label attributes
     @staticmethod
     def copy_labels_attribute(API_class_src, API_class_dst, project_id_src, project_id_dst, label_mapping, attribute_class_mapping):
         '''

@@ -65,26 +65,3 @@ class LabelClass:
     @staticmethod
     def get_total_items(API_class, project_id):
         return LabelClass.list(API_class, project_id, limit=0)['meta']['total']
-
-
-lov_endpoint = '/v1/projects/{project_id}/labels/{label_id}/attributes'
-
-class LabelAttributeLOV:
-    
-    @staticmethod
-    def list(API_class, project_id, attribute_id, offset=0, limit=100):
-        json_data = {
-            'offset': offset,
-            'limit': limit
-        }
-        return api_requestor.get(API_class, lov_endpoint.format(project_id=project_id, attribute_id=attribute_id), json_data=json_data)
-
-    @staticmethod
-    def create(API_class, project_id, attribute_id, value):
-        return api_requestor.post(API_class, lov_endpoint.format(project_id=project_id,
-                                                      attribute_id=attribute_id),
-                                  json_data={'value': value})
-
-    @staticmethod
-    def get_total_items(API_class, project_id, attribute_id):
-        return LabelAttributeLOV.list(API_class, project_id, attribute_id, limit=0)['meta']['total']
