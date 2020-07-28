@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name = 'hastypython',
+    name = 'hasty_python',
     version = '1.0',
     description = 'this is a python package to interface with the hasty API',
     url = 'https://github.com/hasty-ai/hasty-python/',
