@@ -24,6 +24,18 @@ class Label:
         return api_requestor.get(API_class, Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=json_data)
 
     @staticmethod
+    def fetch_all_batch(API_class, project_id, image_mapping):
+        tot = []
+        n = Label.get_total_items(API_class, project_id)
+        for image_id in image_mapping:
+            image_labs = []
+            for offset in range(0, n+1, 100):
+                image_labs += Label.list_image(API_class, project_id, image_id, offset=offset)['items']
+            if len(image_labs)>0:
+                tot.append(image_labs)
+        return tot
+
+    @staticmethod
     def fetch_all(API_class, project_id, image_mapping):
         tot = []
         n = Label.get_total_items(API_class, project_id)
@@ -47,16 +59,16 @@ class Label:
         return api_requestor.post(API_class, Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=json_data)
 
     @staticmethod
-    def copy(API_class, project_id, item_to_copy, image_mapping, label_class_mapping):
+    def copy(API_class, project_id, items_to_copy, image_mapping, label_class_mapping):
         json_data = [{
-            'class_id': label_class_mapping[item_to_copy['class_id']],
-            'bbox': item_to_copy['bbox'],
-            'mask': item_to_copy['mask'],
-            'polygon': item_to_copy['polygon'],
-            'z_index': item_to_copy['z_index'],
-            'tool_used': item_to_copy['tool_used']
-        }]
-        image_id = image_mapping[item_to_copy['image_id']]
+            'class_id': label_class_mapping[i['class_id']],
+            'bbox': i['bbox'],
+            'mask': i['mask'],
+            'polygon': i['polygon'],
+            'z_index': i['z_index'],
+            'tool_used': i['tool_used']
+        } for i in items_to_copy]
+        image_id = image_mapping[items_to_copy[0]['image_id']]
         return api_requestor.post(API_class, Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=json_data)
 
     @staticmethod
