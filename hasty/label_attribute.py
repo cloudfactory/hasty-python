@@ -34,7 +34,7 @@ class LabelAttribute:
         return api_requestor.post(API_class, LabelAttribute.set_endpoint.format(project_id=project_id, label_id=label_id, attribute_id=attribute_id), json_data=json_data)
 
     @staticmethod
-    def copy(API_class, project_id, label_id, attribute_class_mapping, item_to_copy):
+    def copy(API_class, project_id, item_to_copy, label_id, attribute_class_mapping):
         json_data = {
             'value': item_to_copy['value']
         }

@@ -37,7 +37,7 @@ class Image:
     def copy(API_class, project_id, item_to_copy, dataset_mapping):
         json_data = {
             'copy_original': True,
-            'dataset_id': dataset_mapping[item_to_copy['id']],
+            'dataset_id': dataset_mapping[item_to_copy['dataset_id']],
             'filename': item_to_copy['name'],
             'url': item_to_copy['public_url'],
         }
