@@ -1,8 +1,5 @@
 from __future__ import absolute_import, division, print_function
-import os
-
 from . import api_requestor
-
 
 
 class Image:
@@ -14,7 +11,9 @@ class Image:
             'offset': offset,
             'limit': limit
         }
-        return api_requestor.get(API_class, Image.endpoint.format(project_id=project_id), json_data=json_data)
+        return api_requestor.get(API_class,
+                                 Image.endpoint.format(project_id=project_id),
+                                 json_data=json_data)
 
     @staticmethod
     def fetch_all(API_class, project_id):
@@ -30,9 +29,10 @@ class Image:
             'url': image_url,
             'dataset_id': dataset_id
         }
-        return api_requestor.post(API_class, Image.endpoint.format(project_id=project_id),
+        return api_requestor.post(API_class,
+                                  Image.endpoint.format(project_id=project_id),
                                   json_data=json_data)
-    
+
     @staticmethod
     def copy(API_class, project_id, item_to_copy, dataset_mapping):
         json_data = {
@@ -41,9 +41,10 @@ class Image:
             'filename': item_to_copy['name'],
             'url': item_to_copy['public_url'],
         }
-        return api_requestor.post(API_class, Image.endpoint.format(project_id=project_id), json_data=json_data)
+        return api_requestor.post(API_class,
+                                  Image.endpoint.format(project_id=project_id),
+                                  json_data=json_data)
 
     @staticmethod
     def get_total_items(API_class, project_id):
         return Image.list(API_class, project_id, limit=0)['meta']['total']
-

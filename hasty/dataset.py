@@ -13,7 +13,9 @@ class Dataset:
             'offset': offset,
             'limit': limit
         }
-        return api_requestor.get(API_class, Dataset.endpoint.format(project_id=project_id), json_data=json_data)
+        return api_requestor.get(API_class,
+                                 Dataset.endpoint.format(project_id=project_id),
+                                 json_data=json_data)
 
     @staticmethod
     def fetch_all(API_class, project_id):
@@ -30,7 +32,8 @@ class Dataset:
             'name': name,
             'norder': norder
         }
-        return api_requestor.post(API_class, Dataset.endpoint.format(project_id=project_id),
+        return api_requestor.post(API_class,
+                                  Dataset.endpoint.format(project_id=project_id),
                                   json_data=json_data)
 
     @staticmethod
@@ -40,18 +43,25 @@ class Dataset:
             'name': item_to_copy['name'],
             'norder': item_to_copy['norder']
         }
-        return api_requestor.post(API_class, Dataset.endpoint.format(project_id=project_id), json_data=json_data)
+        return api_requestor.post(API_class,
+                                  Dataset.endpoint.format(project_id=project_id),
+                                  json_data=json_data)
 
     @staticmethod
     def delete(API_class, project_id, dataset_id):
-        return api_requestor.delete(API_class, Dataset.endpoint_delete.format(project_id=project_id, dataset_id=dataset_id))
-    
+        return api_requestor.delete(API_class,
+                                    Dataset.endpoint_delete.format(project_id=project_id,
+                                                                   dataset_id=dataset_id))
+
     @staticmethod
     def delete_all(API_class, project_id):
         datasets = Dataset.fetch_all(API_class, project_id)
         dataset_ids = [dataset['id'] for dataset in datasets]
-        return [Dataset.delete(API_class, project_id, dataset_id) for dataset_id in dataset_ids]
-    
+        return [Dataset.delete(API_class,
+                               project_id,
+                               dataset_id)
+                for dataset_id in dataset_ids]
+
     @staticmethod
     def get_total_items(API_class, project_id):
         return Dataset.list(API_class, project_id, limit=0)['meta']['total']

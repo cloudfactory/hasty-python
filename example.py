@@ -1,10 +1,10 @@
 import hasty
 
-# quick example to retreive the project list 
+# quick example to retreive the project list
 # and read the first 100 images from the first project in list
 
 my_API = hasty.API(api_key="enter here your Key",
-        api_base="https://api.staging.dev.hasty.ai")
+                   api_base="https://api.staging.dev.hasty.ai")
 
 # retreive the first 50 images from the project
 project_list = hasty.Project.fetch_all(my_API)

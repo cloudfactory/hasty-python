@@ -12,7 +12,9 @@ class LabelClass:
             'offset': offset,
             'limit': limit
         }
-        return api_requestor.get(API_class, LabelClass.endpoint.format(project_id=project_id), json_data=json_data)
+        return api_requestor.get(API_class,
+                                 LabelClass.endpoint.format(project_id=project_id),
+                                 json_data=json_data)
 
     @staticmethod
     def fetch_all(API_class, project_id):
@@ -21,21 +23,24 @@ class LabelClass:
         for offset in range(0, n, 100):
             tot += LabelClass.list(API_class, project_id, offset=offset)['items']
         return tot
-        
+
     @staticmethod
     def create(API_class, project_id, class_name, class_type, color='#49D3404D'):
-        return api_requestor.post(API_class, LabelClass.endpoint.format(project_id=project_id),
-            json_data= {
+        json_data = {
                 'name': class_name,
                 'type': class_type,
                 'color': color
-                })
+        }
+        return api_requestor.post(API_class,
+                                  LabelClass.endpoint.format(project_id=project_id),
+                                  json_data=json_data)
 
     @staticmethod
     def delete(API_class, project_id, label_class_id):
         delete_endpoint = f'{LabelClass.endpoint.format(project_id=project_id)}/{label_class_id}'
-        return api_requestor.delete(API_class, delete_endpoint)
-    
+        return api_requestor.delete(API_class,
+                                    delete_endpoint)
+
     @staticmethod
     def delete_all(API_class, project_id):
         label_classes = LabelClass.fetch_all(API_class, project_id)
@@ -53,7 +58,9 @@ class LabelClass:
             'parent_id': item_to_copy['parent_id'],
             'removable': item_to_copy['removable']
         }
-        return api_requestor.post(API_class, LabelClass.endpoint.format(project_id=project_id), json_data=json_data)
+        return api_requestor.post(API_class,
+                                  LabelClass.endpoint.format(project_id=project_id),
+                                  json_data=json_data)
 
     @staticmethod
     def get_total_items(API_class, project_id):
