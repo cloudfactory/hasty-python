@@ -83,8 +83,8 @@ class Utils:
         return dataset_mapping
 
     @staticmethod
-    def copy_images(API_class_src, API_class_dst, project_id_src, project_id_dst,
-                    dataset_mapping):
+    def copy_images_deprecated(API_class_src, API_class_dst, project_id_src, project_id_dst,
+                               dataset_mapping):
         '''
         copy every image in a project to an other
         '''
@@ -111,12 +111,12 @@ class Utils:
         return image_mapping
 
     @staticmethod
-    def copy_labels(API_class_src, API_class_dst, project_id_src, project_id_dst,
-                    image_mapping, label_class_mapping):
+    def copy_labels_deprecated(API_class_src, API_class_dst, project_id_src, project_id_dst,
+                               image_mapping, label_class_mapping):
         '''
         copy every label in a project to an other
         '''
-        label_batches = Label.fetch_all(API_class_src, project_id_src, image_mapping)
+        label_batches = Label.fetch_all_project(API_class_src, project_id_src, image_mapping)
         label_mapping = {}
         for label_batch in label_batches:
             ret = Label.copy(API_class_dst,
