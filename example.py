@@ -10,7 +10,7 @@ my_API = hasty.API(api_key="enter here your Key",
 project_list = hasty.Project.fetch_all(my_API)
 print(project_list)
 
-project_id = project_list["items"][0]["id"]
+project_id = project_list[0]["id"]
 
 # retreive the first 50 images from the project
 images_list = hasty.Image.list(my_API, project_id, offset=0, limit=50)
