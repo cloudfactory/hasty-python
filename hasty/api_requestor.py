@@ -16,12 +16,18 @@ def get(API_class, endpoint, json_data=None):
                             params=json_data).json()
 
 
-def post(API_class, endpoint, json_data=None, data=None):
+def post(API_class, endpoint, json_data=None):
     return requests.request("POST",
                             API_class.api_base + endpoint,
                             headers=API_class.headers,
-                            json=json_data,
-                            data=data).json()
+                            json=json_data).json()
+
+
+def edit(API_class, endpoint, json_data=None):
+    return requests.request("PUT",
+                            API_class.api_base + endpoint,
+                            headers=API_class.headers,
+                            json=json_data).json()
 
 
 def delete(API_class, endpoint, json_data=None):

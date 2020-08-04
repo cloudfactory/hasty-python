@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
-from . import Dataset, Image, Label, LabelClass, LabelAttribute, AttributeClass
+from . import Dataset, Image, Label, LabelClass, LabelAttribute, Attribute
 
 
 class Utils:
@@ -32,19 +32,19 @@ class Utils:
         return label_class_mapping
 
     @staticmethod
-    def copy_attributes(API_class_src, API_class_dst, project_id_src, project_id_dst):
+    def copys(API_class_src, API_class_dst, project_id_src, project_id_dst):
         '''
         copy every attribute in a project to an other
         '''
-        dst_attributes = AttributeClass.fetch_all_attribute(API_class_dst, project_id_dst)
+        dst_attributes = Attribute.fetch_all(API_class_dst, project_id_dst)
         dst_names = [i['name'] for i in dst_attributes]
 
-        attributes = AttributeClass.fetch_all_attribute(API_class_src, project_id_src)
+        attributes = Attribute.fetch_all(API_class_src, project_id_src)
         attribute_mapping = {}
         for attribute in attributes:
             if attribute['name'] not in dst_names:
                 # add attribute class if there is no name duplicates
-                ret = AttributeClass.copy_attribute(API_class_dst,
+                ret = Attribute.copy(API_class_dst,
                                                     project_id_dst,
                                                     attribute)
                 attribute_mapping[attribute['id']] = ret['id']
@@ -58,17 +58,17 @@ class Utils:
         return attribute_mapping
 
     @staticmethod
-    def copy_attribute_classes(API_class_src, API_class_dst, project_id_src, project_id_dst,
+    def copy_classes(API_class_src, API_class_dst, project_id_src, project_id_dst,
                                attribute_class_mapping, label_class_mapping):
         '''
         copy every attribute class in a project to an other
         '''
         attribute_class_mapping = {}
         for attribute_id_src in attribute_class_mapping:
-            attribute_classes = AttributeClass.fetch_all_attribute_class(API_class_src,
+            attribute_classes = Attribute.fetch_all_class(API_class_src,
                                                                          project_id_src,
                                                                          attribute_id_src)
-            AttributeClass.copy_attribute_class(API_class_dst, project_id_dst,
+            Attribute.copy_class(API_class_dst, project_id_dst,
                                                 attribute_class_mapping[attribute_id_src],
                                                 attribute_classes,
                                                 label_class_mapping)
@@ -170,11 +170,11 @@ class Utils:
         print("label class copy completed")
 
         print("starting attribute copy...")
-        attribute_mapping = Utils.copy_attributes(API_class_src, API_class_dst, project_id_src, project_id_dst)
+        attribute_mapping = Utils.copys(API_class_src, API_class_dst, project_id_src, project_id_dst)
         print("attribute copy completed")
 
         print("starting class attribute copy...")
-        Utils.copy_attribute_classes(API_class_src, API_class_dst, project_id_src, project_id_dst,
+        Utils.copy_classes(API_class_src, API_class_dst, project_id_src, project_id_dst,
                                      attribute_mapping, label_class_mapping)
         print("attribute class copy completed")
 

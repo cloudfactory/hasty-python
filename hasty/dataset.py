@@ -5,7 +5,7 @@ from . import api_requestor
 
 class Dataset:
     endpoint = '/v1/projects/{project_id}/datasets'
-    endpoint_delete = '/v1/projects/{project_id}/datasets/{dataset_id}'
+    endpoint_dataset = '/v1/projects/{project_id}/datasets/{dataset_id}'
 
     @staticmethod
     def list(API_class, project_id, offset=0, limit=100):
@@ -48,18 +48,29 @@ class Dataset:
                                   json_data=json_data)
 
     @staticmethod
-    def delete(API_class, project_id, dataset_id):
+    def edit_dataset(API_class, project_id, dataset_id, name, norder=None):
+        json_data = {
+            'name': name,
+            'norder': norder
+        }
+        return api_requestor.edit(API_class,
+                                  Dataset.endpoint_dataset.format(project_id=project_id,
+                                                                  dataset_id=dataset_id),
+                                  json_data=json_data)
+
+    @staticmethod
+    def delete_dataset(API_class, project_id, dataset_id):
         return api_requestor.delete(API_class,
-                                    Dataset.endpoint_delete.format(project_id=project_id,
-                                                                   dataset_id=dataset_id))
+                                    Dataset.endpoint_dataset.format(project_id=project_id,
+                                                                    dataset_id=dataset_id))
 
     @staticmethod
     def delete_all(API_class, project_id):
         datasets = Dataset.fetch_all(API_class, project_id)
         dataset_ids = [dataset['id'] for dataset in datasets]
-        return [Dataset.delete(API_class,
-                               project_id,
-                               dataset_id)
+        return [Dataset.delete_dataset(API_class,
+                                       project_id,
+                                       dataset_id)
                 for dataset_id in dataset_ids]
 
     @staticmethod

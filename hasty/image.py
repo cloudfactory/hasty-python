@@ -4,6 +4,8 @@ from . import api_requestor
 
 class Image:
     endpoint = '/v1/projects/{project_id}/images'
+    endpoint_uploads = '/v1/projects/{project_id}/image_uploads'
+    endpoint_image = '/v1/projects/{project_id}/images/{image_id}'
 
     @staticmethod
     def list(API_class, project_id, offset=0, limit=100):
@@ -43,6 +45,18 @@ class Image:
         }
         return api_requestor.post(API_class,
                                   Image.endpoint.format(project_id=project_id),
+                                  json_data=json_data)
+
+    @staticmethod
+    def edit(API_class, project_id, image_id, filename, url, copy_original=True):
+        json_data = {
+            'filename': filename,
+            'url': url,
+            'copy_original': copy_original
+        }
+        return api_requestor.edit(API_class,
+                                  Image.endpoint_image.format(project_id=project_id,
+                                                              image_id=image_id),
                                   json_data=json_data)
 
     @staticmethod
