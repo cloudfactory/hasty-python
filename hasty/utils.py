@@ -45,8 +45,8 @@ class Utils:
             if attribute['name'] not in dst_names:
                 # add attribute class if there is no name duplicates
                 ret = Attribute.copy(API_class_dst,
-                                                    project_id_dst,
-                                                    attribute)
+                                     project_id_dst,
+                                     attribute)
                 attribute_mapping[attribute['id']] = ret['id']
 
             else:
@@ -59,19 +59,19 @@ class Utils:
 
     @staticmethod
     def copy_classes(API_class_src, API_class_dst, project_id_src, project_id_dst,
-                               attribute_class_mapping, label_class_mapping):
+                     attribute_class_mapping, label_class_mapping):
         '''
         copy every attribute class in a project to an other
         '''
         attribute_class_mapping = {}
         for attribute_id_src in attribute_class_mapping:
             attribute_classes = Attribute.fetch_all_class(API_class_src,
-                                                                         project_id_src,
-                                                                         attribute_id_src)
+                                                          project_id_src,
+                                                          attribute_id_src)
             Attribute.copy_class(API_class_dst, project_id_dst,
-                                                attribute_class_mapping[attribute_id_src],
-                                                attribute_classes,
-                                                label_class_mapping)
+                                 attribute_class_mapping[attribute_id_src],
+                                 attribute_classes,
+                                 label_class_mapping)
         return
 
     @staticmethod
@@ -133,7 +133,7 @@ class Utils:
         '''
         copy every label in a project to an other
         '''
-        label_batches = Label.fetch_all_batch(API_class_src, project_id_src, image_mapping)
+        label_batches = Label.fetch_all(API_class_src, project_id_src, image_mapping)
         label_mapping = {}
         for label_batch in label_batches:
             ret = Label.copy(API_class_dst,
@@ -175,7 +175,7 @@ class Utils:
 
         print("starting class attribute copy...")
         Utils.copy_classes(API_class_src, API_class_dst, project_id_src, project_id_dst,
-                                     attribute_mapping, label_class_mapping)
+                           attribute_mapping, label_class_mapping)
         print("attribute class copy completed")
 
         print("starting dataset copy...")

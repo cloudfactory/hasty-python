@@ -39,6 +39,7 @@ class Project:
         return api_requestor.post(API_class,
                                   Project.endpoint,
                                   json_data=json_data)
+
     @staticmethod
     def edit_project(API_class, project_id, name=None, description=None):
         json_data = {

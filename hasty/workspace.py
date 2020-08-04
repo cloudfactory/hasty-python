@@ -45,7 +45,6 @@ class Workspace:
                                   Workspace.endpoint_workspace.format(workspace_id=workspace_id),
                                   json_data=json_data)
 
-
     @staticmethod
     def get_total_items(API_class):
         return Workspace.list(API_class, limit=0)['meta']['total']
