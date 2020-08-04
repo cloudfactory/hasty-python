@@ -4,7 +4,7 @@ from . import api_requestor
 
 
 class Label:
-    endpoint = '/v1/projects/{project_id}/images/{image_id}/labels'
+    endpoint_image = '/v1/projects/{project_id}/images/{image_id}/labels'
     endpoint_project = '/v1/projects/{project_id}/labels'
 
     @staticmethod
@@ -18,26 +18,37 @@ class Label:
                                  json_data=json_data)
 
     @staticmethod
-    def list(API_class, project_id, image_id, offset=0, limit=100):
+    def list_image(API_class, project_id, image_id, offset=0, limit=100):
         json_data = {
             'offset': offset,
             'limit': limit
         }
         return api_requestor.get(API_class,
-                                 Label.endpoint.format(project_id=project_id,
-                                                       image_id=image_id),
+                                 Label.endpoint_image.format(project_id=project_id,
+                                                             image_id=image_id),
                                  json_data=json_data)
 
     @staticmethod
-    def fetch_all(API_class, project_id, image_mapping):
+    def fetch_all_image(API_class, project_id, image_id):
         tot = []
-        n = Label.get_total_items(API_class, project_id)
+        n = Label.get_total_items_image(API_class, project_id)
+        for offset in range(0, n+1, 100):
+            tot += Label.list_image(API_class, project_id, image_id, offset=offset)['items']
+        return tot
+
+    @staticmethod
+    def fetch_all_project(API_class, project_id, image_id):
+        tot = []
+        n = Label.get_total_items_project(API_class, project_id)
+        for offset in range(0, n+1, 100):
+            tot += Label.list_project(API_class, project_id, offset=offset)['items']
+        return tot
+
+    @staticmethod
+    def fetch_all_images(API_class, project_id, image_mapping):
+        tot = []
         for image_id in image_mapping:
-            image_labs = []
-            for offset in range(0, n+1, 100):
-                image_labs += Label.list(API_class, project_id, image_id, offset=offset)['items']
-            if len(image_labs) > 0:
-                tot.append(image_labs)
+            tot += Label.fetch_all_image(API_class, project_id, image_id)
         return tot
 
     @staticmethod
@@ -50,8 +61,8 @@ class Label:
             'z_index': z_index
         }]
         return api_requestor.post(API_class,
-                                  Label.endpoint.format(project_id=project_id,
-                                                        image_id=image_id),
+                                  Label.endpoint_image.format(project_id=project_id,
+                                                              image_id=image_id),
                                   json_data=json_data)
 
     @staticmethod
@@ -66,8 +77,8 @@ class Label:
         } for i in items_to_copy]
         image_id = image_mapping[items_to_copy[0]['image_id']]
         return api_requestor.post(API_class,
-                                  Label.endpoint.format(project_id=project_id,
-                                                        image_id=image_id),
+                                  Label.endpoint_image.format(project_id=project_id,
+                                                              image_id=image_id),
                                   json_data=json_data)
 
     @staticmethod
@@ -81,8 +92,8 @@ class Label:
             'z_index': z_index
         }]
         return api_requestor.edit(API_class,
-                                  Label.endpoint.format(project_id=project_id,
-                                                        image_id=image_id),
+                                  Label.endpoint_image.format(project_id=project_id,
+                                                              image_id=image_id),
                                   json_data=json_data)
 
     @staticmethod
@@ -93,10 +104,14 @@ class Label:
             'labels': [{'label_id': label_id} for label_id in label_ids]
         }
         return api_requestor.delete(API_class,
-                                    Label.endpoint.format(project_id=project_id,
-                                                          image_id=image_id),
+                                    Label.endpoint_image.format(project_id=project_id,
+                                                                image_id=image_id),
                                     json_data=json_data)
 
     @staticmethod
-    def get_total_items(API_class, project_id):
+    def get_total_items_project(API_class, project_id):
         return Label.list_project(API_class, project_id, limit=0)['meta']['total']
+
+    @staticmethod
+    def get_total_items_image(API_class, project_id):
+        return Label.list(API_class, project_id, limit=0)['meta']['total']
