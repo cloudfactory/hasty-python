@@ -130,7 +130,7 @@ class Workspace:
 
         Returns
         -------
-        int 
+        int
             number of workspaces
 
         """

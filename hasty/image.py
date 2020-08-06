@@ -57,8 +57,7 @@ class Image:
         """
         return api_requestor.get(API_class,
                                  Image.endpoint_image.format(project_id=project_id,
-                                                             image_id=image_id),
-                                 json_data=json_data)
+                                                             image_id=image_id))
 
     @staticmethod
     def fetch_all(API_class, project_id):
