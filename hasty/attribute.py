@@ -4,29 +4,34 @@ from . import api_requestor
 
 
 class Attribute:
+    '''
+    This is a class that contains some basic requests and features for attributes
+    '''
     endpoint = '/v1/projects/{project_id}/attributes'
     endpoint_attribute = '/v1/projects/{project_id}/attributes/{attribute_id}'
 
     @staticmethod
-    def list(API_class, project_id, offset=0, limit=100):
-        json_data = {
-            'offset': offset,
-            'limit': limit
-        }
-        return api_requestor.get(API_class,
-                                 Attribute.endpoint.format(project_id=project_id),
-                                 json_data=json_data)
-    @staticmethod
     def fetch_all(API_class, project_id):
-        tot = []
-        n = Attribute.get_total_items_attribute(API_class, project_id)
-        for offset in range(0, n+1, 100):
-            tot += Attribute.list(API_class, project_id, offset=offset)['items']
-        return tot
+        '''
+        Function to retreive every attribute in a project
+
+        Parameters:
+            API_class (hasty.api.API): API object
+            project_id (string): id of the project you want to fetch
+
+        Returns:
+            a list of attributes
+        '''
+        return api_requestor.get(API_class,
+                                 Attribute.endpoint.format(
+                                     project_id=project_id))
 
     @staticmethod
     def create(API_class, project_id, attribute_name, attribute_type,
                description=None, default=None, min=None, max=None):
+        '''
+        Function to create an attribute
+        '''
         json_data = {
             'name': attribute_name,
             'type': attribute_type,
@@ -36,7 +41,8 @@ class Attribute:
             'max': max
         }
         return api_requestor.post(API_class,
-                                  Attribute.endpoint.format(project_id=project_id),
+                                  Attribute.endpoint.format(
+                                      project_id=project_id),
                                   json_data=json_data)
 
     @staticmethod
@@ -51,7 +57,8 @@ class Attribute:
             'max': item_to_copy['max']
         }
         return api_requestor.post(API_class,
-                                  Attribute.endpoint.format(project_id=project_id),
+                                  Attribute.endpoint.format(
+                                      project_id=project_id),
                                   json_data=json_data)
 
     @staticmethod
@@ -73,7 +80,3 @@ class Attribute:
         return api_requestor.delete(API_class,
                                     Attribute.endpoint_attribute.format(project_id=project_id,
                                                                         attribute_id=attribute_id))
-
-    @staticmethod
-    def get_total_items_attribute(API_class, project_id):
-        return Attribute.list(API_class, project_id, limit=0)['meta']['total']
