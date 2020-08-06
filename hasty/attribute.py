@@ -4,20 +4,20 @@ from . import api_requestor
 
 
 class Attribute:
-    """Class that contains some basic requests and features for attributes"""
+    """Class that contains some basic requests and features for attributes."""
     endpoint = '/v1/projects/{project_id}/attributes'
     endpoint_attribute = '/v1/projects/{project_id}/attributes/{attribute_id}'
 
     @staticmethod
     def fetch_all(API_class, project_id):
-        """Retreives every attribute in a project
+        """Retreives every attributes from a given project
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
 
         Returns
         -------
@@ -31,14 +31,14 @@ class Attribute:
     @staticmethod
     def create(API_class, project_id, attribute_name, attribute_type,
                description=None, default=None, min=None, max=None, values=[]):
-        """Create an attribute
+        """Creates a new attribute for the given project
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         attribute_name : str
             attribute name
         attribute_type : str
@@ -76,14 +76,14 @@ class Attribute:
 
     @staticmethod
     def copy(API_class, project_id, item_to_copy):
-        """Create an attribute from an existing one
+        """Copies an attribute object to the given project
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         item_to_copy : dict
             attribute object to copy
 
@@ -116,9 +116,9 @@ class Attribute:
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         attribute_id : str
-            attribute id
+            id of the attribute
         name : str
             new attribute name
         type : str
@@ -150,16 +150,16 @@ class Attribute:
 
     @staticmethod
     def delete_attribute(API_class, project_id, attribute_id):
-        """
+        """ deletes the given attribute from the given project
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         attribute_id : str
-            attribute id
+            id of the attribute
 
         Returns
         -------

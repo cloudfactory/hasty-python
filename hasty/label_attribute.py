@@ -4,22 +4,22 @@ from . import api_requestor
 
 
 class LabelAttribute:
-    """ """
+    """Class that contains some basic requests and features for label attributes."""
     endpoint = '/v1/projects/{project_id}/labels/{label_id}/attributes'
     set_endpoint = '/v1/projects/{project_id}/labels/{label_id}/attributes/{attribute_id}'
 
     @staticmethod
-    def list(API_class, project_id, label_id):
-        """
+    def fetch_all_label(API_class, project_id, label_id):
+        """ fetches every label attributes from the given label
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         label_id : str
-            label id
+            id of the label
 
         Returns
         -------
@@ -33,16 +33,16 @@ class LabelAttribute:
 
     @staticmethod
     def fetch_all(API_class, project_id, label_ids):
-        """
+        """ fetches every label attrtibutes of the given label list
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
-        label_ids : list
-            label id list
+            id of the project
+        label_ids : iterable
+            iterable of label ids
 
         Returns
         -------
@@ -51,24 +51,24 @@ class LabelAttribute:
         """
         lab_attributes = {}
         for label_id in label_ids:
-            lab_attributes[label_id] = LabelAttribute.list(
+            lab_attributes[label_id] = LabelAttribute.fetch_all_label(
                 API_class, project_id, label_id)['items']
         return lab_attributes
 
     @staticmethod
     def set(API_class, project_id, label_id, attribute_id, value):
-        """
+        """ sets a label attribute's value
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         label_id : str
-            label id
+            id of the label
         attribute_id : str
-            attribute id
+            id of the attribute
         value :
             value to set label attribute to
 
@@ -88,19 +88,19 @@ class LabelAttribute:
                                   json_data=json_data)
 
     @staticmethod
-    def copy(API_class, project_id, item_to_copy, label_id, attribute_class_mapping):
-        """
+    def copy(API_class, project_id, label_id, item_to_copy, attribute_class_mapping):
+        """ copies a label attribute object to the given label
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         item_to_copy : dict
-            label attributes to copy
+            label attribute object to copy
         label_id : str
-            label id
+            id of the label
         attribute_class_mapping : dict
             attribute class ids mapping from src to dst
 

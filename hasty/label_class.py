@@ -4,7 +4,7 @@ from . import api_requestor
 
 
 class LabelClass:
-    """ """
+    """Class that contains some basic requests and features for label classes."""
     endpoint = '/v1/projects/{project_id}/label_classes'
     endpoint_class = '/v1/projects/{project_id}/label_classes/{label_class_id}'
 
@@ -34,7 +34,8 @@ class LabelClass:
             'limit': limit
         }
         return api_requestor.get(API_class,
-                                 LabelClass.endpoint.format(project_id=project_id),
+                                 LabelClass.endpoint.format(
+                                     project_id=project_id),
                                  json_data=json_data)
 
     @staticmethod
@@ -56,7 +57,8 @@ class LabelClass:
         tot = []
         n = LabelClass.get_total_items(API_class, project_id)
         for offset in range(0, n, 100):
-            tot += LabelClass.list(API_class, project_id, offset=offset)['items']
+            tot += LabelClass.list(API_class, project_id,
+                                   offset=offset)['items']
         return tot
 
     @staticmethod
@@ -83,12 +85,13 @@ class LabelClass:
 
         """
         json_data = {
-                'name': class_name,
-                'type': class_type,
-                'color': color
+            'name': class_name,
+            'type': class_type,
+            'color': color
         }
         return api_requestor.post(API_class,
-                                  LabelClass.endpoint.format(project_id=project_id),
+                                  LabelClass.endpoint.format(
+                                      project_id=project_id),
                                   json_data=json_data)
 
     @staticmethod
@@ -120,7 +123,8 @@ class LabelClass:
             'removable': item_to_copy['removable']
         }
         return api_requestor.post(API_class,
-                                  LabelClass.endpoint.format(project_id=project_id),
+                                  LabelClass.endpoint.format(
+                                      project_id=project_id),
                                   json_data=json_data)
 
     @staticmethod
@@ -136,15 +140,15 @@ class LabelClass:
         label_class_id : str
             id of the label class to edit
         name : str
-            name of the new label class
+            name of the label class
         type : str
-            type of the new label class
+            type of the label class
         color : str
-            color of the new label class (Default value = None)
+            color of the label class (Default value = None)
         icon_url : url
-            icon url of the new label class (Default value = None)
+            icon url of the label class (Default value = None)
         norder : int
-            order number of the new label class (Default value = None)
+            order number of the label class (Default value = None)
 
         Returns
         -------
@@ -166,7 +170,7 @@ class LabelClass:
 
     @staticmethod
     def delete_class(API_class, project_id, label_class_id):
-        """ deletes a given label class
+        """ deletes the given label class from the project
 
         Parameters
         ----------
@@ -210,7 +214,7 @@ class LabelClass:
 
     @staticmethod
     def get_total_items(API_class, project_id):
-        """ gets the number of label classes in the project
+        """ gets the number of label classes in the given project
 
         Parameters
         ----------

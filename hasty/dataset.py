@@ -4,20 +4,20 @@ from . import api_requestor
 
 
 class Dataset:
-    """Class that contains some basic requests and features for datasets"""
+    """Class that contains some basic requests and features for datasets."""
     endpoint = '/v1/projects/{project_id}/datasets'
     endpoint_dataset = '/v1/projects/{project_id}/datasets/{dataset_id}'
 
     @staticmethod
     def list(API_class, project_id, offset=0, limit=100):
-        """
+        """ fetches a list of datasets given the offset and limit params
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         offset : int
             query offset param (Default value = 0)
         limit : int
@@ -40,14 +40,14 @@ class Dataset:
 
     @staticmethod
     def fetch_all(API_class, project_id):
-        """
+        """ fetches every dataset in the given project
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
 
         Returns
         -------
@@ -63,14 +63,14 @@ class Dataset:
 
     @staticmethod
     def create(API_class, project_id, dataset_id, name, norder=None):
-        """
+        """ creates a new dataset in the given project
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         dataset_id : str
             dataset id
         name : str
@@ -96,14 +96,14 @@ class Dataset:
 
     @staticmethod
     def copy(API_class, project_id, item_to_copy):
-        """
+        """ copies a dataset object to the given project
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         item_to_copy : dict
             dataset object to copy
 
@@ -125,19 +125,19 @@ class Dataset:
 
     @staticmethod
     def edit_dataset(API_class, project_id, dataset_id, name, norder=None):
-        """
+        """ edits an existing dataset
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         dataset_id : str
             dataset id
         name : str
             new dataset name
-        norder :
+        norder : int
             order number (Default value = None)
 
         Returns
@@ -157,14 +157,14 @@ class Dataset:
 
     @staticmethod
     def delete_dataset(API_class, project_id, dataset_id):
-        """
+        """ deletes a dataset in the given project
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         dataset_id : str
             dataset_id
 
@@ -180,14 +180,14 @@ class Dataset:
 
     @staticmethod
     def delete_all(API_class, project_id):
-        """
+        """ deletes every datasets in the given project
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
 
         Returns
         -------
@@ -204,14 +204,14 @@ class Dataset:
 
     @staticmethod
     def get_total_items(API_class, project_id):
-        """
+        """ gets the number of dataset in the given project
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
 
         Returns
         -------

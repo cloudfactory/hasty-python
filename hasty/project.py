@@ -4,7 +4,7 @@ from . import api_requestor
 
 
 class Project:
-    """ """
+    """Class that contains some basic requests and features for projects."""
     endpoint = '/v1/projects'
     endpoint_project = '/v1/projects/{project_id}'
 
@@ -64,7 +64,7 @@ class Project:
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
 
         Returns
         -------
@@ -84,9 +84,9 @@ class Project:
         API_class : class
             hasty.API class
         project_name : str
-            project name
+            name of the project
         description : str
-            description
+            description of the project
 
         Returns
         -------
@@ -111,7 +111,7 @@ class Project:
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         name : str
             name (Default value = None)
         description : str
@@ -128,7 +128,8 @@ class Project:
             'description': description
         }
         return api_requestor.edit(API_class,
-                                  Project.endpoint_project.format(project_id=project_id),
+                                  Project.endpoint_project.format(
+                                      project_id=project_id),
                                   json_data=json_data)
 
     @staticmethod
@@ -140,7 +141,7 @@ class Project:
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
 
         Returns
         -------

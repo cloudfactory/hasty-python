@@ -4,20 +4,20 @@ from . import api_requestor
 
 
 class Label:
-    """ """
+    """Class that contains some basic requests and features for labels."""
     endpoint_image = '/v1/projects/{project_id}/images/{image_id}/labels'
     endpoint_project = '/v1/projects/{project_id}/labels'
 
     @staticmethod
     def list_project(API_class, project_id, offset=0, limit=100):
-        """
+        """ fetches a list of label given the offset and limit params from the project endpoint
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         offset : int
             query offset param (Default value = 0)
         limit : int
@@ -40,14 +40,14 @@ class Label:
 
     @staticmethod
     def list_image(API_class, project_id, image_id, offset=0, limit=100):
-        """
+        """ fetches a list of label given the offset and limit params from the image endpoint
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         image_id : str
             image id
         offset : int
@@ -72,16 +72,16 @@ class Label:
 
     @staticmethod
     def fetch_all_image(API_class, project_id, image_id):
-        """
+        """ fetches every labels of the given image using the image endpoint
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         image_id : str
-            image id
+            id of the image
 
         Returns
         -------
@@ -89,7 +89,7 @@ class Label:
             label objects from image endpoint
         """
         tot = []
-        n = Label.get_total_items_image(API_class, project_id)
+        n = Label.get_total_items_image(API_class, project_id, image_id)
         for offset in range(0, n+1, 100):
             tot += Label.list_image(API_class, project_id,
                                     image_id, offset=offset)['items']
@@ -97,16 +97,16 @@ class Label:
 
     @staticmethod
     def fetch_all_project(API_class, project_id, image_id):
-        """
+        """ fetches every labels in the project using the project endpoint
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         image_id : str
-            image id
+            id of the image
 
         Returns
         -------
@@ -122,17 +122,17 @@ class Label:
         return tot
 
     @staticmethod
-    def fetch_all_images(API_class, project_id, image_mapping):
-        """
+    def fetch_all_images(API_class, project_id, image_ids):
+        """ fetches every labels from the image_ids iterable using the image endpoint
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
-        image_mapping :
-
+            id of the project
+        image_ids : iterable
+            iterable of image ids
 
         Returns
         -------
@@ -141,20 +141,20 @@ class Label:
 
         """
         tot = []
-        for image_id in image_mapping:
+        for image_id in image_ids:
             tot += Label.fetch_all_image(API_class, project_id, image_id)
         return tot
 
     @staticmethod
     def create(API_class, project_id, image_id, class_id, bbox, mask, polygon, z_index=0):
-        """
+        """ create a new label for the given image
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         image_id : str
             image id
         class_id : str
@@ -162,7 +162,7 @@ class Label:
         bbox : list [int]
             bounding box coordinates
         mask : list [int]
-            mask label
+            mask encoded label
         polygon : list [int]
             polygon label coordinates
         z_index : int
@@ -188,14 +188,14 @@ class Label:
 
     @staticmethod
     def copy(API_class, project_id, items_to_copy, image_mapping, label_class_mapping):
-        """
+        """ copies a label object to the given image
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         items_to_copy : dict
             label objects to copy
         image_mapping : dict
@@ -225,28 +225,28 @@ class Label:
 
     @staticmethod
     def edit(API_class, project_id, image_id, label_id, class_id, bbox, mask, polygon, z_index=0):
-        """
+        """ edits an existing label
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         image_id : str
-            image id
+            id of the image
         label_id : str
-            label id
+            id of the label
         class_id : str
-            label class id
+            id of the label class
         bbox : list [int]
             bounding box coordinates
         mask : list [int]
-            mask label
+            mask encoded label
         polygon : list [int]
             polygon label coordinates
-        z_index :
-             (Default value = 0)
+        z_index : int
+            z position index (Default value = 0)
 
         Returns
         -------
@@ -267,18 +267,18 @@ class Label:
 
     @staticmethod
     def delete(API_class, project_id, image_id, label_ids):
-        """
+        """ deletes every labels in label_ids iterable from the given image
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
         image_id : str
             image id
-        label_ids : list [str]
-            label id list
+        label_ids : iterable
+            iterable of label ids
 
         Returns
         -------
@@ -298,14 +298,14 @@ class Label:
 
     @staticmethod
     def get_total_items_project(API_class, project_id):
-        """
+        """ gets the number of labels in the given project
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
 
         Returns
         -------
@@ -317,14 +317,14 @@ class Label:
 
     @staticmethod
     def get_total_items_image(API_class, project_id, image_id):
-        """
+        """ gets the number of labels in the given image
 
         Parameters
         ----------
         API_class : class
             hasty.API class
         project_id : str
-            project id
+            id of the project
 
         Returns
         -------

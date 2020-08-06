@@ -1,32 +1,24 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar  3 09:40:28 2020
-
-@author: kostya
-"""
-
 import requests
 
 
 def get(API_class, endpoint, json_data=None):
-    """
+    """ get request
 
     Parameters
     ----------
     API_class : class
             hasty.API class
     endpoint :
-        
+
     json_data :
         (Default value = None)
     endpoint :
-        
+
 
     Returns
     -------
 
-    
+
     """
     return requests.request("GET",
                             API_class.api_base + endpoint,
@@ -35,23 +27,23 @@ def get(API_class, endpoint, json_data=None):
 
 
 def post(API_class, endpoint, json_data=None):
-    """
+    """ post request
 
     Parameters
     ----------
     API_class : class
             hasty.API class
     endpoint :
-        
+
     json_data :
         (Default value = None)
     endpoint :
-        
+
 
     Returns
     -------
 
-    
+
     """
     return requests.request("POST",
                             API_class.api_base + endpoint,
@@ -60,23 +52,23 @@ def post(API_class, endpoint, json_data=None):
 
 
 def edit(API_class, endpoint, json_data=None):
-    """
+    """ put request
 
     Parameters
     ----------
     API_class : class
             hasty.API class
     endpoint :
-        
+
     json_data :
         (Default value = None)
     endpoint :
-        
+
 
     Returns
     -------
 
-    
+
     """
     return requests.request("PUT",
                             API_class.api_base + endpoint,
@@ -85,23 +77,23 @@ def edit(API_class, endpoint, json_data=None):
 
 
 def delete(API_class, endpoint, json_data=None):
-    """
+    """ delete request
 
     Parameters
     ----------
     API_class : class
             hasty.API class
     endpoint :
-        
+
     json_data :
         (Default value = None)
     endpoint :
-        
+
 
     Returns
     -------
 
-    
+
     """
     return requests.request("DELETE",
                             API_class.api_base + endpoint,

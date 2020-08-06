@@ -4,7 +4,7 @@ from . import api_requestor
 
 
 class Workspace:
-    """ """
+    """Class that contains some basic requests and features for workspaces."""
     endpoint = '/v1/workspaces'
     endpoint_workspace = '/v1/workspaces/{workspace_id}'
 
@@ -115,7 +115,8 @@ class Workspace:
             'unique_name': unique_name
         }
         return api_requestor.edit(API_class,
-                                  Workspace.endpoint_workspace.format(workspace_id=workspace_id),
+                                  Workspace.endpoint_workspace.format(
+                                      workspace_id=workspace_id),
                                   json_data=json_data)
 
     @staticmethod

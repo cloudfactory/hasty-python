@@ -4,11 +4,11 @@ from . import Dataset, Image, Label, LabelClass, LabelAttribute, Attribute
 
 
 class Utils:
-    """ """
+    """Class that contains additional utilities that may suit your needs."""
 
     @staticmethod
     def copy_label_classes(API_class_src, API_class_dst, project_id_src, project_id_dst):
-        """copies every label class in a project to an other
+        """copies every label classes in a project to an other
 
         Parameters
         ----------
@@ -50,7 +50,7 @@ class Utils:
 
     @staticmethod
     def copy_attributes(API_class_src, API_class_dst, project_id_src, project_id_dst):
-        """copies every attribute in a project to an other
+        """copies every attributes in a project to an other
 
         Parameters
         ----------
@@ -92,7 +92,7 @@ class Utils:
 
     @staticmethod
     def copy_datasets(API_class_src, API_class_dst, project_id_src, project_id_dst):
-        """copies every dataset in a project to an other
+        """copies every datasets in a project to an other
 
         Parameters
         ----------
@@ -134,7 +134,7 @@ class Utils:
     @staticmethod
     def copy_images_deprecated(API_class_src, API_class_dst, project_id_src, project_id_dst,
                                dataset_mapping):
-        """copies every image in a project to an other
+        """copies every images in a project to an other
         This is a deprecated function
 
         Parameters
@@ -183,7 +183,7 @@ class Utils:
     @staticmethod
     def copy_labels_deprecated(API_class_src, API_class_dst, project_id_src, project_id_dst,
                                image_mapping, label_class_mapping):
-        """copies every label in a project to an other
+        """copies every labels in a project to an other
         This is a deprecated function
 
         Parameters
