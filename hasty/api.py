@@ -2,15 +2,13 @@ import uuid
 
 
 class API:
-    '''
-    This is the API class, this object will be passed to every functions that you call
-    '''
+    """This is the API class, this object will be passed to every functions that you call"""
     def __init__(self, api_key, last_state_ui, api_base='https://api.hasty.ai'):
-        '''
+        """
         Parameters:
             api_key (string): your hasty API key
             api_base (string): base link of the API
-        '''
+        """
         if isinstance(api_key, str):
             self.api_key = api_key
         else:
@@ -30,5 +28,4 @@ class API:
             'accept': 'application/json',
             'X-Api-Key': self.api_key,
             'X-Session-Id': str(uuid.uuid4())
-            ''
         }

@@ -4,21 +4,57 @@ from . import api_requestor
 
 
 class Dataset:
+    """Class that contains some basic requests and features for datasets"""
     endpoint = '/v1/projects/{project_id}/datasets'
     endpoint_dataset = '/v1/projects/{project_id}/datasets/{dataset_id}'
 
     @staticmethod
     def list(API_class, project_id, offset=0, limit=100):
+        """
+
+        Parameters
+        ----------
+        API_class : class
+            hasty.API class
+        project_id : str
+            project id
+        offset : int
+            query offset param (Default value = 0)
+        limit : int
+            query limit param (Default value = 100)
+
+        Returns
+        -------
+        dict
+            dataset objects
+
+        """
         json_data = {
             'offset': offset,
             'limit': limit
         }
         return api_requestor.get(API_class,
-                                 Dataset.endpoint.format(project_id=project_id),
+                                 Dataset.endpoint.format(
+                                     project_id=project_id),
                                  json_data=json_data)
 
     @staticmethod
     def fetch_all(API_class, project_id):
+        """
+
+        Parameters
+        ----------
+        API_class : class
+            hasty.API class
+        project_id : str
+            project id
+
+        Returns
+        -------
+        list [dict]
+            dataset objects
+
+        """
         tot = []
         n = Dataset.get_total_items(API_class, project_id)
         for offset in range(0, n+1, 100):
@@ -26,29 +62,90 @@ class Dataset:
         return tot
 
     @staticmethod
-    def create(API_class, project_id, dataset_id, name, norder):
+    def create(API_class, project_id, dataset_id, name, norder=None):
+        """
+
+        Parameters
+        ----------
+        API_class : class
+            hasty.API class
+        project_id : str
+            project id
+        dataset_id : str
+            dataset id
+        name : str
+            dataset name
+        norder : float
+            order number (Default value = None)
+
+        Returns
+        -------
+        dict
+            dataset object
+
+        """
         json_data = {
             'id': dataset_id,
             'name': name,
             'norder': norder
         }
         return api_requestor.post(API_class,
-                                  Dataset.endpoint.format(project_id=project_id),
+                                  Dataset.endpoint.format(
+                                      project_id=project_id),
                                   json_data=json_data)
 
     @staticmethod
     def copy(API_class, project_id, item_to_copy):
+        """
+
+        Parameters
+        ----------
+        API_class : class
+            hasty.API class
+        project_id : str
+            project id
+        item_to_copy : dict
+            dataset object to copy
+
+        Returns
+        -------
+        dict
+            dataset object
+
+        """
         json_data = {
             'id': item_to_copy['id'],
             'name': item_to_copy['name'],
             'norder': item_to_copy['norder']
         }
         return api_requestor.post(API_class,
-                                  Dataset.endpoint.format(project_id=project_id),
+                                  Dataset.endpoint.format(
+                                      project_id=project_id),
                                   json_data=json_data)
 
     @staticmethod
     def edit_dataset(API_class, project_id, dataset_id, name, norder=None):
+        """
+
+        Parameters
+        ----------
+        API_class : class
+            hasty.API class
+        project_id : str
+            project id
+        dataset_id : str
+            dataset id
+        name : str
+            new dataset name
+        norder :
+            order number (Default value = None)
+
+        Returns
+        -------
+        dict
+            dataset object
+
+        """
         json_data = {
             'name': name,
             'norder': norder
@@ -60,12 +157,44 @@ class Dataset:
 
     @staticmethod
     def delete_dataset(API_class, project_id, dataset_id):
+        """
+
+        Parameters
+        ----------
+        API_class : class
+            hasty.API class
+        project_id : str
+            project id
+        dataset_id : str
+            dataset_id
+
+        Returns
+        -------
+        json
+            empty
+
+        """
         return api_requestor.delete(API_class,
                                     Dataset.endpoint_dataset.format(project_id=project_id,
                                                                     dataset_id=dataset_id))
 
     @staticmethod
     def delete_all(API_class, project_id):
+        """
+
+        Parameters
+        ----------
+        API_class : class
+            hasty.API class
+        project_id : str
+            project id
+
+        Returns
+        -------
+        list [json]
+            empty jsons
+
+        """
         datasets = Dataset.fetch_all(API_class, project_id)
         dataset_ids = [dataset['id'] for dataset in datasets]
         return [Dataset.delete_dataset(API_class,
@@ -75,4 +204,19 @@ class Dataset:
 
     @staticmethod
     def get_total_items(API_class, project_id):
+        """
+
+        Parameters
+        ----------
+        API_class : class
+            hasty.API class
+        project_id : str
+            project id
+
+        Returns
+        -------
+        int
+            number of items
+
+        """
         return Dataset.list(API_class, project_id, limit=0)['meta']['total']

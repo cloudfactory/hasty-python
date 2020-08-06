@@ -10,6 +10,24 @@ import requests
 
 
 def get(API_class, endpoint, json_data=None):
+    """
+
+    Parameters
+    ----------
+    API_class : class
+            hasty.API class
+    endpoint :
+        
+    json_data :
+        (Default value = None)
+    endpoint :
+        
+
+    Returns
+    -------
+
+    
+    """
     return requests.request("GET",
                             API_class.api_base + endpoint,
                             headers=API_class.headers,
@@ -17,6 +35,24 @@ def get(API_class, endpoint, json_data=None):
 
 
 def post(API_class, endpoint, json_data=None):
+    """
+
+    Parameters
+    ----------
+    API_class : class
+            hasty.API class
+    endpoint :
+        
+    json_data :
+        (Default value = None)
+    endpoint :
+        
+
+    Returns
+    -------
+
+    
+    """
     return requests.request("POST",
                             API_class.api_base + endpoint,
                             headers=API_class.headers,
@@ -24,6 +60,24 @@ def post(API_class, endpoint, json_data=None):
 
 
 def edit(API_class, endpoint, json_data=None):
+    """
+
+    Parameters
+    ----------
+    API_class : class
+            hasty.API class
+    endpoint :
+        
+    json_data :
+        (Default value = None)
+    endpoint :
+        
+
+    Returns
+    -------
+
+    
+    """
     return requests.request("PUT",
                             API_class.api_base + endpoint,
                             headers=API_class.headers,
@@ -31,6 +85,24 @@ def edit(API_class, endpoint, json_data=None):
 
 
 def delete(API_class, endpoint, json_data=None):
+    """
+
+    Parameters
+    ----------
+    API_class : class
+            hasty.API class
+    endpoint :
+        
+    json_data :
+        (Default value = None)
+    endpoint :
+        
+
+    Returns
+    -------
+
+    
+    """
     return requests.request("DELETE",
                             API_class.api_base + endpoint,
                             headers=API_class.headers,
