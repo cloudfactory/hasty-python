@@ -7,17 +7,16 @@ def get(API_class, endpoint, json_data=None):
     Parameters
     ----------
     API_class : class
-            hasty.API class
-    endpoint :
-
-    json_data :
-        (Default value = None)
-    endpoint :
-
+        hasty.API class
+    endpoint : str
+        url endpoint
+    json_data : dict
+        dict of arguments to be passed as query string parameter (Default value = None)
 
     Returns
     -------
-
+    json
+        request result
 
     """
     return requests.request("GET",
@@ -32,17 +31,16 @@ def post(API_class, endpoint, json_data=None):
     Parameters
     ----------
     API_class : class
-            hasty.API class
-    endpoint :
-
+        hasty.API class
+    endpoint : str
+        url endpoint
     json_data :
-        (Default value = None)
-    endpoint :
-
+        dict of arguments to be passed as body parameter (Default value = None)
 
     Returns
     -------
-
+    json
+        request result
 
     """
     return requests.request("POST",
@@ -57,17 +55,16 @@ def edit(API_class, endpoint, json_data=None):
     Parameters
     ----------
     API_class : class
-            hasty.API class
-    endpoint :
-
+        hasty.API class
+    endpoint : str
+        url endpoint
     json_data :
-        (Default value = None)
-    endpoint :
-
+        dict of arguments to be passed as body parameter (Default value = None)
 
     Returns
     -------
-
+    json
+        request result
 
     """
     return requests.request("PUT",
@@ -82,16 +79,16 @@ def delete(API_class, endpoint, json_data=None):
     Parameters
     ----------
     API_class : class
-            hasty.API class
-    endpoint :
-
+        hasty.API class
+    endpoint : str
+        url endpoint
     json_data :
-        (Default value = None)
-    endpoint :
-
+        dict of arguments to be passed as body parameter (Default value = None)
 
     Returns
     -------
+    json
+        request result (empty)
 
 
     """
