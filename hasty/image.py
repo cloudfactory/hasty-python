@@ -1,197 +1,84 @@
-from __future__ import absolute_import, division, print_function
+from collections import OrderedDict
+import os
 
-from . import api_requestor
+from .hasty_object import HastyObject
+from .helper import PaginatedList
 
 
-class Image:
-    """Class that contains some basic requests and features for images."""
+class Image(HastyObject):
     endpoint = '/v1/projects/{project_id}/images'
     endpoint_uploads = '/v1/projects/{project_id}/image_uploads'
     endpoint_image = '/v1/projects/{project_id}/images/{image_id}'
 
-    @staticmethod
-    def list(API_class, project_id, offset=0, limit=100):
-        """ fetches a list of images given the offset and limit params
+    def __repr__(self):
+        return self.get__repr__(OrderedDict({"id": self._id, "dataset_name": self._dataset_name, "name": self._name}))
 
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-        offset : int
-            query offset param (Default value = 0)
-        limit : int
-            query limit param (Default value = 100)
-
-        Returns
-        -------
-        dict
-            image objects
-
+    @property
+    def id(self):
         """
-        json_data = {
-            'offset': offset,
-            'limit': limit
-        }
-        return api_requestor.get(API_class,
-                                 Image.endpoint.format(project_id=project_id),
-                                 json_data=json_data)
-
-    @staticmethod
-    def fetch_image(API_class, project_id, image_id):
-        """ fetches image's metadata
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-
-        Returns
-        -------
-        list [dict]
-            image objects
-
+        :type: string
         """
-        return api_requestor.get(API_class,
-                                 Image.endpoint_image.format(project_id=project_id,
-                                                             image_id=image_id))
+        return self._id
 
-    @staticmethod
-    def fetch_all(API_class, project_id):
-        """ fetches every images in the given project
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-
-        Returns
-        -------
-        list [dict]
-            image objects
-
+    @property
+    def name(self):
         """
-        tot = []
-        n = Image.get_total_items(API_class, project_id)
-        for offset in range(0, n+1, 100):
-            tot += Image.list(API_class, project_id, offset=offset)['items']
-        return tot
+        :type: string
+        """
+        return self._name
+
+    @property
+    def project_id(self):
+        """
+        :type: string
+        """
+        return self._project_id
+
+    @property
+    def dataset_id(self):
+        """
+        :type: string
+        """
+        return self._dataset_id
+
+    @property
+    def dataset_name(self):
+        """
+        :type: string
+        """
+        return self._dataset_name
+
+    def _init_properties(self):
+        self._id = None
+        self._name = None
+        self._project_id = None
+        self._dataset_name = None
+
+    def _set_prop_values(self, data):
+        if "id" in data:
+            self._id = data["id"]
+        if "name" in data:
+            self._name = data["name"]
+        if "project_id" in data:
+            self._project_id = data["project_id"]
+        if "dataset_id" in data:
+            self._dataset_id = data["dataset_id"]
+        if "dataset_name" in data:
+            self._dataset_name = data["dataset_name"]
 
     @staticmethod
-    def create(API_class, project_id, dataset_id, image_url):
-        """ creates a new image in the given dataset
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-        dataset_id : str
-            dataset id
-        image_url : str
-            image url
-
-        Returns
-        -------
-        dict
-            image object
-
-        """
-        json_data = {
-            'url': image_url,
-            'dataset_id': dataset_id
-        }
-        return api_requestor.post(API_class,
-                                  Image.endpoint.format(project_id=project_id),
-                                  json_data=json_data)
+    def _generate_sign_url(requester, project_id):
+        data = requester.post(Image.endpoint_uploads.format(project_id=project_id), json_data={"count": 1})
+        return data["items"][0]
 
     @staticmethod
-    def copy(API_class, project_id, item_to_copy, dataset_mapping):
-        """ copies an image object to the given project
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-        item_to_copy : dict
-            image object to copy
-        dataset_mapping : dict
-            ids mapping from src to dst
-
-        Returns
-        -------
-        dict
-            image object
-
-        """
-        json_data = {
-            'copy_original': True,
-            'dataset_id': dataset_mapping[item_to_copy['dataset_id']],
-            'filename': item_to_copy['name'],
-            'url': item_to_copy['public_url'],
-        }
-        return api_requestor.post(API_class,
-                                  Image.endpoint.format(project_id=project_id),
-                                  json_data=json_data)
-
-    @staticmethod
-    def edit(API_class, project_id, image_id, filename, url, copy_original=True):
-        """ edits an existing image
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-        image_id :
-            id of the image
-        filename : str
-            new image filename
-        url : str
-            new image url
-        copy_original : bool
-            whether to copy the url or not (Default value = True)
-
-        Returns
-        -------
-        dict
-            image object
-
-        """
-        json_data = {
-            'filename': filename,
-            'url': url,
-            'copy_original': copy_original
-        }
-        return api_requestor.edit(API_class,
-                                  Image.endpoint_image.format(project_id=project_id,
-                                                              image_id=image_id),
-                                  json_data=json_data)
-
-    @staticmethod
-    def get_total_items(API_class, project_id):
-        """ gets the number of images in the given project
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-
-        Returns
-        -------
-        int
-            number of items
-
-        """
-        return Image.list(API_class, project_id, limit=0)['meta']['total']
+    def upload_from_file(requester, project_id, dataset_id, filepath):
+        filename = os.path.basename(filepath)
+        url_data = Image._generate_sign_url(requester, project_id)
+        requester.put(url_data['url'], data=open(filepath, 'rb').read(), content_type="image/*")
+        res = requester.post(Image.endpoint.format(project_id=project_id),
+                             json_data={"dataset_id": dataset_id,
+                                        "filename": filename,
+                                        "upload_id": url_data["id"]})
+        return Image(requester, res, {"project_id": project_id,
+                                      "dataset_id": dataset_id})

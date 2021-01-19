@@ -1,171 +1,56 @@
-from __future__ import absolute_import, division, print_function
+from collections import OrderedDict
 
-from . import api_requestor
+from .dataset import Dataset
+from .hasty_object import HastyObject
+from .helper import PaginatedList
+from .image import Image
 
 
-class Project:
-    """Class that contains some basic requests and features for projects."""
+class Project(HastyObject):
     endpoint = '/v1/projects'
     endpoint_project = '/v1/projects/{project_id}'
 
-    @staticmethod
-    def list(API_class, offset=0, limit=100):
-        """ fetches a list of projects given the offset and limit params
+    def __repr__(self):
+        return self.get__repr__(OrderedDict({"id": self._id, "name": self._name}))
 
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        offset : int
-            query offset param (Default value = 0)
-        limit : int
-            query limit param (Default value = 100)
-
-        Returns
-        -------
-        dict
-            project objects
-
+    @property
+    def id(self):
         """
-        json_data = {
-            'offset': offset,
-            'limit': limit
-        }
-        return api_requestor.get(API_class,
-                                 Project.endpoint,
-                                 json_data=json_data)
-
-    @staticmethod
-    def fetch_all(API_class):
-        """ fetches every projects in the workspace
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-
-        Returns
-        -------
-        list [dict]
-            project objects
+        :type: string
         """
-        tot = []
-        n = Project.get_total_items(API_class)
-        for offset in range(0, n+1, 100):
-            tot += Project.list(API_class, offset=offset)['items']
-        return tot
+        return self._id
 
-    @staticmethod
-    def fetch_project(API_class, project_id):
-        """ fetches project's metadata
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-
-        Returns
-        -------
-        dict
-            project metadata
-
+    @property
+    def name(self):
         """
-        return api_requestor.get(API_class,
-                                 Project.endpoint_project.format(project_id=project_id))
-
-    @staticmethod
-    def create(API_class, project_name, description):
-        """ creates a new project
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_name : str
-            name of the project
-        description : str
-            description of the project
-
-        Returns
-        -------
-        dict
-            new project object
-
+        :type: string
         """
-        json_data = {
-            'name': project_name,
-            'description': description
-        }
-        return api_requestor.post(API_class,
-                                  Project.endpoint,
-                                  json_data=json_data)
+        return self._name
 
-    @staticmethod
-    def edit_project(API_class, project_id, name=None, description=None):
-        """ edits an existing project
+    def _init_properties(self):
+        self._id = None
+        self._name = None
 
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-        name : str
-            name (Default value = None)
-        description : str
-            description (Default value = None)
+    def _set_prop_values(self, data):
+        if "id" in data:
+            self._id = data["id"]
+        if "name" in data:
+            self._name = data["name"]
 
-        Returns
-        -------
-        dict
-            new project object
+    def get_datasets(self):
+        return PaginatedList(Dataset, self._requester,
+                             Dataset.endpoint.format(project_id=self._id),
+                             {"projec_id": self._id})
 
-        """
-        json_data = {
-            'name': name,
-            'description': description
-        }
-        return api_requestor.edit(API_class,
-                                  Project.endpoint_project.format(
-                                      project_id=project_id),
-                                  json_data=json_data)
+    def get_images(self):
+        return PaginatedList(Image, self._requester,
+                             Image.endpoint.format(project_id=self._id))
 
-    @staticmethod
-    def delete_project(API_class, project_id):
-        """ deletes the given project
+    def upload_from_file(self, dataset, filepath):
+        dataset_id = dataset
+        if isinstance(dataset, Dataset):
+            dataset_id = dataset.id
+        return Image.upload_from_file(self._requester, self._id, dataset_id, filepath)
 
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-
-        Returns
-        -------
-        json
-            empty
-
-        """
-        return api_requestor.delete(API_class,
-                                    Project.endpoint_project.format(project_id=project_id))
-
-    @staticmethod
-    def get_total_items(API_class):
-        """ gets the total number of projects in the workspace
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-
-        Returns
-        -------
-        int
-            number of projects
-
-        """
-        print(Project.list(API_class, limit=0))
-        return Project.list(API_class, limit=0)['meta']['total']
+    def create_dataset(self, name):
+        return Dataset.create(self._requester, self._id, name)
