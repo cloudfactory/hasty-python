@@ -41,3 +41,10 @@ class Requester:
         if not data:
             return response.json(), response.status_code
         return None, response.status_code
+
+    def delete(self, endpoint):
+        print(self.base_url + endpoint)
+        response = requests.request("DELETE", self.base_url + endpoint)
+        if response.status_code != '204':
+            # TODO Handle different status codes
+            raise Exception("Something went wrong", response)

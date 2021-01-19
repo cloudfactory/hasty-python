@@ -50,3 +50,7 @@ class Dataset(HastyObject):
         res = requester.post(Dataset.endpoint.format(project_id=project_id),
                              json_data={"name": name})
         return Dataset(requester, res, {"project_id": project_id})
+
+    def delete(self):
+        self._requester.delete(Dataset.endpoint_dataset.format(project_id=self.project_id,
+                                                               dataset_id=self.id))

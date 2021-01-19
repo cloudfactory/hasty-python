@@ -4,6 +4,7 @@ from .dataset import Dataset
 from .hasty_object import HastyObject
 from .helper import PaginatedList
 from .image import Image
+from .label_class import LabelClass
 
 
 class Project(HastyObject):
@@ -40,7 +41,10 @@ class Project(HastyObject):
     def get_datasets(self):
         return PaginatedList(Dataset, self._requester,
                              Dataset.endpoint.format(project_id=self._id),
-                             {"projec_id": self._id})
+                             {"project_id": self._id})
+
+    def create_dataset(self, name):
+        return Dataset.create(self._requester, self._id, name)
 
     def get_images(self):
         return PaginatedList(Image, self._requester,
@@ -52,5 +56,9 @@ class Project(HastyObject):
             dataset_id = dataset.id
         return Image.upload_from_file(self._requester, self._id, dataset_id, filepath)
 
-    def create_dataset(self, name):
-        return Dataset.create(self._requester, self._id, name)
+    def get_label_classes(self):
+        return PaginatedList(LabelClass, self._requester,
+                             LabelClass.endpoint.format(project_id=self._id))
+
+    def create_label_class(self, name, color=None, class_type="object", norder=None):
+        return LabelClass.create(self._requester, self._id, name, color, class_type, norder)
