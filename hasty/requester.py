@@ -46,7 +46,9 @@ class Requester:
                                 json_data=json_data)
 
         if not data:
-            return response.json()
+            if response.status_code == 200:
+                return response.json()
+            return None
         return None, response.status_code
 
     def delete(self, endpoint):
