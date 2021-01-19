@@ -83,4 +83,3 @@ class LabelClass(HastyObject):
                                         "type": class_type,
                                         "norder": norder})
         return LabelClass(requester, res, {"project_id": project_id})
-

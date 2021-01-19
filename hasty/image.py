@@ -95,3 +95,8 @@ class Image(HastyObject):
 
     def create_labels(self, labels):
         return Label.batch_create(self._requester, self._project_id, self._id, labels)
+
+    def set_status(self, status):
+        self._requester.put(Image.endpoint_image.format(project_id=self.project_id,
+                                                        image_id=self.id)+"/status",
+                            json_data={"status": status})

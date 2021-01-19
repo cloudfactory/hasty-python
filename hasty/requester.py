@@ -13,38 +13,44 @@ class Requester:
             'X-Session-Id': self.session_id
         }
 
-    def get(self, endpoint, query_params=None):
-        response = requests.request("GET",
-                                    self.base_url + endpoint,
-                                    headers=self.headers,
-                                    params=query_params).json()
-        return response
-
-    def post(self, endpoint, content_type='application/json', json_data=None):
-        self.headers['Content-Type'] = content_type
-        return requests.request("POST",
-                                self.base_url + endpoint,
-                                headers=self.headers,
-                                json=json_data).json()
-
-    def put(self, endpoint, data=None, files=None, content_type='application/json', json_data=None):
-        self.headers['Content-Type'] = content_type
+    def request(self, method, endpoint, headers, params=None, json_data=None, data=None, files=None):
         url = self.base_url + endpoint
         if endpoint.startswith("http"):
             url = endpoint
-        response = requests.request("PUT",
+        response = requests.request(method,
                                     url,
-                                    headers=self.headers,
-                                    data=data,
-                                    files=files,
+                                    headers=headers,
+                                    params=params,
                                     json=json_data)
+        if response.status_code > 299:
+            response.raise_for_status()
+        return response
+
+    def get(self, endpoint, query_params=None):
+        json_data = self.request("GET", endpoint, self.headers, query_params).json()
+        return json_data
+
+    def post(self, endpoint, json_data=None, content_type='application/json'):
+        self.headers['Content-Type'] = content_type
+        return self.request("POST", endpoint,
+                            headers=self.headers,
+                            json_data=json_data).json()
+
+    def put(self, endpoint, data=None, files=None, content_type='application/json', json_data=None):
+        self.headers['Content-Type'] = content_type
+        response = self.request("PUT",
+                                endpoint,
+                                headers=self.headers,
+                                data=data,
+                                files=files,
+                                json_data=json_data)
+
         if not data:
-            return response.json(), response.status_code
+            return response.json()
         return None, response.status_code
 
     def delete(self, endpoint):
-        print(self.base_url + endpoint)
-        response = requests.request("DELETE", self.base_url + endpoint)
+        response = self.request("DELETE", endpoint)
         if response.status_code != '204':
             # TODO Handle different status codes
             raise Exception("Something went wrong", response)
