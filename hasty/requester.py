@@ -13,7 +13,7 @@ class Requester:
             'X-Session-Id': self.session_id
         }
 
-    def get(self, endpoint, query_params):
+    def get(self, endpoint, query_params=None):
         response = requests.request("GET",
                                     self.base_url + endpoint,
                                     headers=self.headers,

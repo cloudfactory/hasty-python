@@ -68,6 +68,11 @@ class Image(HastyObject):
             self._dataset_name = data["dataset_name"]
 
     @staticmethod
+    def get_by_id(requester, project_id, image_id):
+        data = requester.get(Image.endpoint_image.format(project_id=project_id, image_id=image_id))
+        return Image(requester, data, {"project_id": project_id})
+
+    @staticmethod
     def _generate_sign_url(requester, project_id):
         data = requester.post(Image.endpoint_uploads.format(project_id=project_id), json_data={"count": 1})
         return data["items"][0]
@@ -85,5 +90,8 @@ class Image(HastyObject):
                                       "dataset_id": dataset_id})
 
     def create_label(self, class_id, bbox=None, polygon=None, mask=None, z_index=None):
-        label = Label.create(self._project_id, self._id, class_id, bbox, polygon, mask, z_index)
+        label = Label.create(self._requester, self._project_id, self._id, class_id, bbox, polygon, mask, z_index)
         return label
+
+    def create_labels(self, labels):
+        return Label.batch_create(self._requester, self._project_id, self._id, labels)

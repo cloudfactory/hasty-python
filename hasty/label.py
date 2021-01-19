@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 from .hasty_object import HastyObject
+from .helper import PaginatedList
 
 
 class Label(HastyObject):
@@ -90,3 +91,15 @@ class Label(HastyObject):
                                         "mask": mask,
                                         "z_index": z_index})
         return Label(requester, res, {"project_id": project_id, "image_id": image_id})
+
+    @staticmethod
+    def batch_create(requester, project_id, image_id, labels):
+        data = []
+        for label in labels:
+            data.append({"class_id": label["class_id"],
+                         "bbox": label.get("bbox"),
+                         "polygon": label.get("polygon"),
+                         "mask": label.get("mask"),
+                         "z_index": label.get("z_index")})
+        res = requester.post(Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=data)
+        return res["items"]

@@ -50,6 +50,9 @@ class Project(HastyObject):
         return PaginatedList(Image, self._requester,
                              Image.endpoint.format(project_id=self._id))
 
+    def get_image(self, image_id):
+        return Image.get_by_id(self._requester, self._id, image_id)
+
     def upload_from_file(self, dataset, filepath):
         dataset_id = dataset
         if isinstance(dataset, Dataset):
