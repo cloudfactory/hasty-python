@@ -3,6 +3,7 @@ import os
 
 from .hasty_object import HastyObject
 from .helper import PaginatedList
+from .label import Label
 
 
 class Image(HastyObject):
@@ -82,3 +83,7 @@ class Image(HastyObject):
                                         "upload_id": url_data["id"]})
         return Image(requester, res, {"project_id": project_id,
                                       "dataset_id": dataset_id})
+
+    def create_label(self, class_id, bbox=None, polygon=None, mask=None, z_index=None):
+        label = Label.create(self._project_id, self._id, class_id, bbox, polygon, mask, z_index)
+        return label
