@@ -72,7 +72,7 @@ class LabelClass(HastyObject):
             self._color = data["color"]
         if "type" in data:
             self._class_type = data["type"]
-        if "order" in data:
+        if "norder" in data:
             self._norder = data["norder"]
 
     @staticmethod
@@ -83,3 +83,29 @@ class LabelClass(HastyObject):
                                         "type": class_type,
                                         "norder": norder})
         return LabelClass(requester, res, {"project_id": project_id})
+
+    def edit(self, name, color=None, class_type="object", norder=None):
+        """
+        Edit label class properties
+
+        Arguments:
+            name (str): Label class name
+            color (str, optional): Color in HEX format #0f0f0faa
+            class_type (str, optional): Class type [object or background] (default object)
+            norder (float, optional): Order in the Hasty tool
+        """
+        self._requester.put(LabelClass.endpoint_class.format(project_id=self.project_id, label_class_id=self.id),
+                            json_data={"name": name,
+                                        "color": color,
+                                        "type": class_type,
+                                        "norder": norder})
+        self._name = name
+        self._color = color
+        self._class_type = class_type
+        self._norder = norder
+
+    def delete(self):
+        """
+        Deletes label class
+        """
+        self._requester.delete(LabelClass.endpoint_class.format(project_id=self.project_id, label_class_id=self.id))

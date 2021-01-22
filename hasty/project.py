@@ -69,6 +69,7 @@ class Project(HastyObject):
     def edit(self, name, description):
         """
         Edits projects properties
+
         Arguments:
             name (str): Name of the project
             description (str, optional): Project description
@@ -95,7 +96,7 @@ class Project(HastyObject):
 
     def get_dataset(self, dataset_id: str):
         """
-        Get dataset by id
+        Get dataset by id, returns `~hasty.Dataset` object
 
         Arguments:
             dataset_id (str): Dataset id
@@ -133,14 +134,24 @@ class Project(HastyObject):
         return PaginatedList(LabelClass, self._requester,
                              LabelClass.endpoint.format(project_id=self._id))
 
+    def get_label_class(self, label_class_id: str):
+        """
+        Get label class by id, returns `~hasty.LabelClass` object
+
+        Arguments:
+            label_class_id (str): Label class id
+        """
+        res = self._requester.get(LabelClass.endpoint_class.format(project_id=self.id, label_class_id=label_class_id))
+        return LabelClass(self._requester, res, {"project_id": self.id})
+
     def create_label_class(self, name: str, color: str = None, class_type: str = "object", norder: float = None):
         """
-        Create label class, returns :py:class:`~hasty.LabelClass` object.format
+        Create label class, returns :py:class:`~hasty.LabelClass` object.
 
         Args:
             name (str): Label class name
-            color (str): Color in HEX format #0f0f0faa
-            class_type (str): Class type (object or background)
-            norder (float): Order in the Hasty tool
+            color (str, optional): Color in HEX format #0f0f0faa
+            class_type (str, optional): Class type [object or background] (default object)
+            norder (float, optional): Order in the Hasty tool
         """
         return LabelClass.create(self._requester, self._id, name, color, class_type, norder)

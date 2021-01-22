@@ -22,11 +22,10 @@ class TestDataset(unittest.TestCase):
         self.assertEqual("DS2", ds.name)
         self.assertEqual(2, ds.norder)
         # Check get dataset by id
-        #TODO add get dataset by id endpoint
-        #ds_copy = self.project.get_dataset(ds.id)
-        #self.assertEqual(ds_copy.id, ds.id)
-        #self.assertEqual(ds_copy.name, ds.name)
-        #self.assertEqual(ds_copy.norder, ds.norder)
+        ds_copy = self.project.get_dataset(ds.id)
+        self.assertEqual(ds_copy.id, ds.id)
+        self.assertEqual(ds_copy.name, ds.name)
+        self.assertEqual(ds_copy.norder, ds.norder)
         # Delete dataset
         datasets = self.project.get_datasets()
         self.assertEqual(1, len(datasets), 'Should be one dataset')
