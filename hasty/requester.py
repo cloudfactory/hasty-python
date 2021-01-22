@@ -21,7 +21,9 @@ class Requester:
                                     url,
                                     headers=headers,
                                     params=params,
-                                    json=json_data)
+                                    json=json_data,
+                                    data=data,
+                                    files=files)
         if response.status_code > 299:
             response.raise_for_status()
         return response
@@ -52,7 +54,7 @@ class Requester:
         return None, response.status_code
 
     def delete(self, endpoint):
-        response = self.request("DELETE", endpoint)
-        if response.status_code != '204':
+        response = self.request("DELETE", endpoint, headers=self.headers)
+        if response.status_code != 204:
             # TODO Handle different status codes
             raise Exception("Something went wrong", response)
