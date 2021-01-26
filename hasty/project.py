@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from typing import Union
 
 from .dataset import Dataset
 from .hasty_object import HastyObject
@@ -115,17 +116,48 @@ class Project(HastyObject):
         return Dataset.create(self._requester, self._id, name, norder)
 
     def get_images(self):
+        """
+        Retrieves the list of projects images.
+        """
         return PaginatedList(Image, self._requester,
                              Image.endpoint.format(project_id=self._id))
 
     def get_image(self, image_id):
+        """
+        Retrieves the image by its id.
+
+        Args:
+            image_id (str): Image ID
+        """
         return Image.get_by_id(self._requester, self._id, image_id)
 
     def upload_from_file(self, dataset, filepath):
+        """
+        Uploads image from the given filepath
+
+        Args:
+            dataset (`~hasty.Dataset`, str): Dataset object or id that the image should belongs to
+            filepath (str): Local path
+        """
         dataset_id = dataset
         if isinstance(dataset, Dataset):
             dataset_id = dataset.id
         return Image.upload_from_file(self._requester, self._id, dataset_id, filepath)
+
+    def upload_from_url(self, dataset: Union[Dataset, str], filename: str, url: str, copy_original: bool = True):
+        """
+        Uploads image from a given URL
+
+        Args:
+            dataset (`~hasty.Dataset`, str): Dataset object or id that the image should belongs to
+            filename (str): Filename of the image
+            url (str): Image url
+            copy_original (str): If True Hasty makes a copy of the image. Default True.
+        """
+        dataset_id = dataset
+        if isinstance(dataset, Dataset):
+            dataset_id = dataset.id
+        return Image.upload_from_url(self._requester, self._id, dataset_id, filename, url, copy_original=copy_original)
 
     def get_label_classes(self):
         """

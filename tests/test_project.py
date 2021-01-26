@@ -40,7 +40,6 @@ class TestProject(unittest.TestCase):
         self.assertEqual(copy_project.id, new_project1.id, "Projects IDs must be the same")
         self.assertEqual(copy_project.name, new_project1.name, "Projects names must be the same")
 
-
     def tearDown(self) -> None:
         projects = self.h.get_projects()
         for p in projects:

@@ -53,8 +53,8 @@ class Requester:
             return None
         return None, response.status_code
 
-    def delete(self, endpoint):
-        response = self.request("DELETE", endpoint, headers=self.headers)
+    def delete(self, endpoint, json_data=None):
+        response = self.request("DELETE", endpoint, headers=self.headers, json_data=json_data)
         if response.status_code != 204:
             # TODO Handle different status codes
             raise Exception("Something went wrong", response)

@@ -1,9 +1,24 @@
 from collections import OrderedDict
+from typing import List, Union
 import os
 
 from .hasty_object import HastyObject
 from .helper import PaginatedList
+from .exception import ValidationException
 from .label import Label
+from .label_class import LabelClass
+
+
+class ImageStatus:
+    New = "NEW"
+    Done = "DONE"
+    Skipped = "SKIPPED"
+    InProgress = "IN PROGRESS"
+    ToReview = "TO REVIEW"
+    AutoLabelled = "AUTO-LABELLED"
+
+
+VALID_STATUSES = [ImageStatus.New, ImageStatus.Done, ImageStatus.Skipped, ImageStatus.InProgress, ImageStatus.ToReview]
 
 
 class Image(HastyObject):
@@ -81,7 +96,8 @@ class Image(HastyObject):
     def upload_from_file(requester, project_id, dataset_id, filepath):
         filename = os.path.basename(filepath)
         url_data = Image._generate_sign_url(requester, project_id)
-        requester.put(url_data['url'], data=open(filepath, 'rb').read(), content_type="image/*")
+        with open(filepath, 'rb') as f:
+            requester.put(url_data['url'], data=f.read(), content_type="image/*")
         res = requester.post(Image.endpoint.format(project_id=project_id),
                              json_data={"dataset_id": dataset_id,
                                         "filename": filename,
@@ -89,14 +105,88 @@ class Image(HastyObject):
         return Image(requester, res, {"project_id": project_id,
                                       "dataset_id": dataset_id})
 
-    def create_label(self, class_id, bbox=None, polygon=None, mask=None, z_index=None):
+    @staticmethod
+    def upload_from_url(requester, project_id, dataset_id, filename, url, copy_original=True):
+        res = requester.post(Image.endpoint.format(project_id=project_id),
+                             json_data={"dataset_id": dataset_id,
+                                        "filename": filename,
+                                        "url": url,
+                                        "copy_original": copy_original})
+        return Image(requester, res, {"project_id": project_id,
+                                      "dataset_id": dataset_id})
+
+    def get_labels(self):
+        """
+        Returns image labels (list of `~hasty.Label` objects)
+        """
+        return PaginatedList(Label, self._requester,
+                             Label.endpoint_image.format(project_id=self.project_id, image_id=self.id))
+
+    def create_label(self, label_class: Union[LabelClass, str], bbox: List[int] = None, polygon: List[List[int]] = None,
+                     mask: List[int] = None, z_index: int = None):
+        """
+        Create label
+
+        Args:
+            label_class (LabelClass, str): Label class or label class ID of the label
+            bbox (list of int): Coordinates of bounding box [x_min, y_min, x_max, y_max]
+            polygon (list): List of x, y pairs [[x0, y0], [x1, y1], .... [x0, y0]]
+            mask (list of int): RLE Encoded binary mask, (order right -> down)
+            z_index (int): Z index of the label. A label with greater value is in front of a label with a lower one.
+        """
+        class_id = label_class
+        if isinstance(label_class, LabelClass):
+            class_id = label_class.id
         label = Label.create(self._requester, self._project_id, self._id, class_id, bbox, polygon, mask, z_index)
         return label
 
     def create_labels(self, labels):
+        """
+        Create multiple labels. Returns a list of `~hasty.Label` objects
+
+        Args:
+            labels (list of dict): List of labels, keys:
+                    class_id: Label class ID of the label
+                    bbox: Coordinates of bounding box [x_min, y_min, x_max, y_max]
+                    polygon: List of x, y pairs [[x0, y0], [x1, y1], .... [x0, y0]]
+                    mask: RLE Encoded binary mask, (order right -> down)
+                    z_index: Z index of the label.
+        """
         return Label.batch_create(self._requester, self._project_id, self._id, labels)
 
+    def edit_labels(self, labels):
+        """
+        Updates multiple labels. Returns a list of `~hasty.Label` objects
+
+        Args:
+            labels (list of dict): List of labels, keys:
+                    label_id: Label id
+                    class_id: Label class ID of the label
+                    bbox: Coordinates of bounding box [x_min, y_min, x_max, y_max]
+                    polygon: List of x, y pairs [[x0, y0], [x1, y1], .... [x0, y0]]
+                    mask: RLE Encoded binary mask, (order right -> down)
+                    z_index: Z index of the label.
+        """
+        return Label.batch_update(self._requester, self._project_id, self._id, labels)
+
+    def delete_labels(self, label_ids: List[str]):
+        """
+        Removes multiple labels
+
+        Args:
+            label_ids (list of str): Returns list of ids
+        """
+        Label.batch_delete(self._requester, self._project_id, self._id, label_ids)
+
     def set_status(self, status):
+        """
+        Set image status
+
+        Args:
+            status: New status on of ["NEW", "DONE", "SKIPPED", "IN PROGRESS", "TO REVIEW"]
+        """
+        if status not in VALID_STATUSES:
+            raise ValidationException(f"Got {status}, expected on of {VALID_STATUSES}")
         self._requester.put(Image.endpoint_image.format(project_id=self.project_id,
                                                         image_id=self.id)+"/status",
                             json_data={"status": status})
