@@ -2,9 +2,11 @@ from collections import OrderedDict
 from uuid import UUID
 import numbers
 
+from .attribute import Attribute
 from .hasty_object import HastyObject
 from .helper import PaginatedList
 from .exception import LimitExceededException, ValidationException
+from .label_attribute import LabelAttribute
 from .label_class import LabelClass
 from .label_utils import check_bbox_format, check_rle_mask
 
@@ -231,3 +233,23 @@ class Label(HastyObject):
         Delete label
         """
         Label.batch_delete(self._requester, self.project_id, self.image_id, [self.id])
+
+    def get_attributes(self):
+        """
+        Get attributes values, list of :py:class:`~hasty.LabelAttribute` objects.
+        """
+        return PaginatedList(LabelAttribute, self._requester,
+                             LabelAttribute.endpoint.format(project_id=self.project_id, label_id=self.id))
+
+    def set_attribute(self, attribute, value):
+        """
+        Set label attribute
+
+        Args:
+            attribute (`~hasty.Attribute`, str) - `~hasty.Attribute` object or attribute id
+            value (str, float, int, bool, list of str) - Attribute value
+        """
+        attribute_id = attribute
+        if isinstance(attribute, Attribute):
+            attribute_id = attribute.id
+        LabelAttribute.set_label_attribute(self._requester, self.project_id, self.id, attribute_id, value)

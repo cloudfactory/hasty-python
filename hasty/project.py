@@ -1,6 +1,7 @@
 from collections import OrderedDict
-from typing import Union
+from typing import List, Union
 
+from .attribute import Attribute
 from .dataset import Dataset
 from .hasty_object import HastyObject
 from .helper import PaginatedList
@@ -187,3 +188,60 @@ class Project(HastyObject):
             norder (float, optional): Order in the Hasty tool
         """
         return LabelClass.create(self._requester, self._id, name, color, class_type, norder)
+
+    def get_attributes(self):
+        """
+        Get label classes, list of :py:class:`~hasty.Attribute` objects.
+        """
+        return PaginatedList(Attribute, self._requester,
+                             Attribute.endpoint.format(project_id=self._id))
+
+    def create_attribute(self, name: str, attribute_type: str, description: str, norder: float,
+                         values: List[str] = None):
+        """
+        Create attribute, returns :py:class:`~hasty.Attribute` object.
+
+        Args:
+            name (str): Attribute name
+            attribute_type (str): Attribute type ['SELECTION', 'MULTIPLE-SELECTION', 'TEXT', 'INT', 'FLOAT', 'BOOL']
+            description (str, optional): Attrbute description
+            norder (float, optional): Order in the Hasty tool
+            values (list of str): List of values for SELECTION and MULTIPLE-SELECTION attribute type
+        """
+        return Attribute.create(self._requester, self._id, name, attribute_type, description, norder, values)
+
+    def get_attribute_classes(self):
+        """
+        Get attributes - class mapping. Returns list of dict with a keys:
+            - attribute_id - Attribute ID
+            - class_id - Class ID
+            - attribute_order - Order of attributes within the class
+            - class_order - Order of classes within the attribute
+        """
+        return Attribute.get_attributes_classes(self._requester, self._id)
+
+    def set_attribute_classes(self, attribute_classes):
+        """
+        Set attribute - class mapping
+
+        Args:
+            attribute_classes (dict) - list of dict with a keys:
+            - attribute_id - Attribute ID
+            - class_id - Class ID
+            - attribute_order - Order of attributes within the class
+            - class_order - Order of classes within the attribute
+        """
+        return Attribute.set_attributes_classes(self._requester, self._id, attribute_classes)
+
+    def delete_attribute_classes(self, attribute_classes):
+        """
+        Removes attribute - class mapping
+
+        Args:
+            attribute_classes (dict) - list of dict with a keys:
+            - attribute_id - Attribute ID
+            - class_id - Class ID
+            - attribute_order - Order of attributes within the class
+            - class_order - Order of classes within the attribute
+        """
+        return Attribute.delete_attributes_classes(self._requester, self._id, attribute_classes)

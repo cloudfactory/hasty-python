@@ -57,4 +57,4 @@ class Requester:
         response = self.request("DELETE", endpoint, headers=self.headers, json_data=json_data)
         if response.status_code != 204:
             # TODO Handle different status codes
-            raise Exception("Something went wrong", response)
+            raise Exception("Something went wrong {}", response, response.text)
