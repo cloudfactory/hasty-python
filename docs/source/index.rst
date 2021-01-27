@@ -13,6 +13,7 @@ Welcome to The Hasty Python Helper Library's documentation!
    Installation Guide <installation_guide>
    Quick Start <quick_start>
    Python API <python_api>
+   Label Utils <utils>
 
 
 Indices and tables

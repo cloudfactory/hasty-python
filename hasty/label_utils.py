@@ -89,7 +89,7 @@ def polygon_area(polygon):
     return 0.5*np.abs(np.dot(x, np.roll(y, 1))-np.dot(y, np.roll(x, 1)))
 
 
-def polygon2box(polygon: List[int]):
+def polygon2box(polygon: List[List[int]]):
     """
     Converts polygon to bounding box [x_min, y_min, x_max, y_max]
 
