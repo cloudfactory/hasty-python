@@ -19,5 +19,23 @@ setup(
     licence='MIT License',
     long_description_content_type="text/markdown",
     packages=['hasty'],
-    install_requires=['numpy', 'requests >= 2.23.0']
+    setup_requires=[
+        "numpy>=1.16",
+    ],
+    install_requires=["numpy>=1.16", 'requests >= 2.23.0'],
+    python_requires=">=3.6",
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "License :: OSI Approved :: MIT License",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Science/Research",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Topic :: Software Development :: Libraries",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+    ],
 )
