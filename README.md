@@ -1,6 +1,5 @@
 # Python library for the Hasty API.
 [![PyPI version](https://badge.fury.io/py/hasty.svg)](https://badge.fury.io/py/hasty)
- |docs|
 
 ## Installation
 ```
