@@ -19,5 +19,5 @@ setup(
     licence='MIT License',
     long_description_content_type="text/markdown",
     packages=['hasty'],
-    install_requires=['requests >= 2.23.0']
+    install_requires=['numpy', 'requests >= 2.23.0']
 )
