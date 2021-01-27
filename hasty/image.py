@@ -83,7 +83,7 @@ class Image(HastyObject):
             self._dataset_name = data["dataset_name"]
 
     @staticmethod
-    def get_by_id(requester, project_id, image_id):
+    def _get_by_id(requester, project_id, image_id):
         data = requester.get(Image.endpoint_image.format(project_id=project_id, image_id=image_id))
         return Image(requester, data, {"project_id": project_id})
 
@@ -93,7 +93,7 @@ class Image(HastyObject):
         return data["items"][0]
 
     @staticmethod
-    def upload_from_file(requester, project_id, dataset_id, filepath):
+    def _upload_from_file(requester, project_id, dataset_id, filepath):
         filename = os.path.basename(filepath)
         url_data = Image._generate_sign_url(requester, project_id)
         with open(filepath, 'rb') as f:
@@ -106,7 +106,7 @@ class Image(HastyObject):
                                       "dataset_id": dataset_id})
 
     @staticmethod
-    def upload_from_url(requester, project_id, dataset_id, filename, url, copy_original=True):
+    def _upload_from_url(requester, project_id, dataset_id, filename, url, copy_original=True):
         res = requester.post(Image.endpoint.format(project_id=project_id),
                              json_data={"dataset_id": dataset_id,
                                         "filename": filename,
@@ -137,7 +137,7 @@ class Image(HastyObject):
         class_id = label_class
         if isinstance(label_class, LabelClass):
             class_id = label_class.id
-        label = Label.create(self._requester, self._project_id, self._id, class_id, bbox, polygon, mask, z_index)
+        label = Label._create(self._requester, self._project_id, self._id, class_id, bbox, polygon, mask, z_index)
         return label
 
     def create_labels(self, labels):
@@ -152,7 +152,7 @@ class Image(HastyObject):
                     mask: RLE Encoded binary mask, (order right -> down)
                     z_index: Z index of the label.
         """
-        return Label.batch_create(self._requester, self._project_id, self._id, labels)
+        return Label._batch_create(self._requester, self._project_id, self._id, labels)
 
     def edit_labels(self, labels):
         """
@@ -167,7 +167,7 @@ class Image(HastyObject):
                     mask: RLE Encoded binary mask, (order right -> down)
                     z_index: Z index of the label.
         """
-        return Label.batch_update(self._requester, self._project_id, self._id, labels)
+        return Label._batch_update(self._requester, self._project_id, self._id, labels)
 
     def delete_labels(self, label_ids: List[str]):
         """
@@ -176,7 +176,7 @@ class Image(HastyObject):
         Args:
             label_ids (list of str): Returns list of ids
         """
-        Label.batch_delete(self._requester, self._project_id, self._id, label_ids)
+        Label._batch_delete(self._requester, self._project_id, self._id, label_ids)
 
     def set_status(self, status):
         """

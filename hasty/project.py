@@ -114,7 +114,7 @@ class Project(HastyObject):
             name (str): Name of the dataset
             norder (float, optional): Order in the list
         """
-        return Dataset.create(self._requester, self._id, name, norder)
+        return Dataset._create(self._requester, self._id, name, norder)
 
     def get_images(self):
         """
@@ -130,7 +130,7 @@ class Project(HastyObject):
         Args:
             image_id (str): Image ID
         """
-        return Image.get_by_id(self._requester, self._id, image_id)
+        return Image._get_by_id(self._requester, self._id, image_id)
 
     def upload_from_file(self, dataset, filepath):
         """
@@ -143,7 +143,7 @@ class Project(HastyObject):
         dataset_id = dataset
         if isinstance(dataset, Dataset):
             dataset_id = dataset.id
-        return Image.upload_from_file(self._requester, self._id, dataset_id, filepath)
+        return Image._upload_from_file(self._requester, self._id, dataset_id, filepath)
 
     def upload_from_url(self, dataset: Union[Dataset, str], filename: str, url: str, copy_original: bool = True):
         """
@@ -158,7 +158,7 @@ class Project(HastyObject):
         dataset_id = dataset
         if isinstance(dataset, Dataset):
             dataset_id = dataset.id
-        return Image.upload_from_url(self._requester, self._id, dataset_id, filename, url, copy_original=copy_original)
+        return Image._upload_from_url(self._requester, self._id, dataset_id, filename, url, copy_original=copy_original)
 
     def get_label_classes(self):
         """
@@ -187,7 +187,7 @@ class Project(HastyObject):
             class_type (str, optional): Class type [object or background] (default object)
             norder (float, optional): Order in the Hasty tool
         """
-        return LabelClass.create(self._requester, self._id, name, color, class_type, norder)
+        return LabelClass._create(self._requester, self._id, name, color, class_type, norder)
 
     def get_attributes(self):
         """

@@ -1,7 +1,6 @@
 from collections import OrderedDict
 
 from .hasty_object import HastyObject
-from .helper import PaginatedList
 from .requester import Requester
 
 
@@ -57,7 +56,7 @@ class Dataset(HastyObject):
             self._norder = data["norder"]
 
     @staticmethod
-    def create(requester: Requester, project_id: str, name: str, norder: float = 0):
+    def _create(requester: Requester, project_id: str, name: str, norder: float = 0):
         res = requester.post(Dataset.endpoint.format(project_id=project_id),
                              json_data={"name": name,
                                         "norder": norder})

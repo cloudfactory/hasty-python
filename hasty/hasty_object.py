@@ -16,9 +16,9 @@ class HastyObject:
         Converts the object to a nicely printable string.
         """
 
-        def format_params(params):
-            items = list(params.items())
-            if not isinstance(params, OrderedDict):
+        def format_params(_params):
+            items = list(_params.items())
+            if not isinstance(_params, OrderedDict):
                 items = sorted(items, key=itemgetter(0), reverse=True)
             for k, v in items:
                 if isinstance(v, bytes):

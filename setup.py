@@ -2,7 +2,7 @@ import codecs
 import re
 from setuptools import setup
 
-with codecs.open("minio/__init__.py") as file:
+with codecs.open("hasty/__init__.py") as file:
     version = re.search(
         r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
         file.read(),
@@ -12,7 +12,7 @@ with codecs.open("minio/__init__.py") as file:
 setup(
     name='hasty',
     version=version,
-    description='Python package to interface with the Hasty API',
+    description='Hasty API client library',
     url='https://github.com/hasty-ai/hasty-python/',
     author='Hasty GmbH',
     author_email="herbert@hasty.ai",

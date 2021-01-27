@@ -113,7 +113,7 @@ class Label(HastyObject):
             self._z_index = data["z_index"]
 
     @staticmethod
-    def validate_label(class_id, bbox=None, polygon=None, mask=None, z_index=None):
+    def _validate_label(class_id, bbox=None, polygon=None, mask=None, z_index=None):
         try:
             class_id = UUID(class_id)
         except Exception:
@@ -142,11 +142,10 @@ class Label(HastyObject):
         if z_index:
             if not isinstance(z_index, numbers.Number):
                 raise ValidationException(f"Z Index must be None or numeric, got - {z_index}")
-            
 
     @staticmethod
-    def create(requester, project_id, image_id, class_id, bbox=None, polygon=None, mask=None, z_index=None):
-        new_labels = Label.batch_create(requester, project_id, image_id,
+    def _create(requester, project_id, image_id, class_id, bbox=None, polygon=None, mask=None, z_index=None):
+        new_labels = Label._batch_create(requester, project_id, image_id,
                                         [{"class_id": class_id,
                                           "bbox": bbox,
                                           "polygon": polygon,
@@ -155,12 +154,12 @@ class Label(HastyObject):
         return new_labels[0]
 
     @staticmethod
-    def batch_create(requester, project_id, image_id, labels):
+    def _batch_create(requester, project_id, image_id, labels):
         data = []
         if len(labels) > 100:
             raise LimitExceededException.max_labels_per_batch(len(labels))
         for label in labels:
-            Label.validate_label(label["class_id"], label.get("bbox"), label.get("polygon"),
+            Label._validate_label(label["class_id"], label.get("bbox"), label.get("polygon"),
                                  label.get("mask"), label.get("z_index"))
             data.append({"class_id": label["class_id"],
                          "bbox": label.get("bbox"),
@@ -174,12 +173,12 @@ class Label(HastyObject):
         return new_labels
 
     @staticmethod
-    def batch_update(requester, project_id, image_id, labels):
+    def _batch_update(requester, project_id, image_id, labels):
         data = []
         if len(labels) > 100:
             raise LimitExceededException.max_labels_per_batch(len(labels))
         for label in labels:
-            Label.validate_label(label["class_id"], label.get("bbox"), label.get("polygon"),
+            Label._validate_label(label["class_id"], label.get("bbox"), label.get("polygon"),
                                  label.get("mask"), label.get("z_index"))
             data.append({"label_id": label["label_id"],
                          "class_id": label["class_id"],
@@ -194,7 +193,7 @@ class Label(HastyObject):
         return updated_labels
 
     @staticmethod
-    def batch_delete(requester, project_id, image_id, label_ids):
+    def _batch_delete(requester, project_id, image_id, label_ids):
         data = []
         for label_id in label_ids:
             data.append({"id": label_id})
@@ -214,7 +213,7 @@ class Label(HastyObject):
         class_id = label_class
         if isinstance(label_class, LabelClass):
             class_id = label_class.id
-        updated_labels = Label.batch_update(self._requester, self.project_id, self.image_id,
+        updated_labels = Label._batch_update(self._requester, self.project_id, self.image_id,
                                             [{"label_id": self.id,
                                               "class_id": class_id,
                                               "bbox": bbox,
@@ -232,7 +231,7 @@ class Label(HastyObject):
         """
         Delete label
         """
-        Label.batch_delete(self._requester, self.project_id, self.image_id, [self.id])
+        Label._batch_delete(self._requester, self.project_id, self.image_id, [self.id])
 
     def get_attributes(self):
         """
@@ -252,4 +251,4 @@ class Label(HastyObject):
         attribute_id = attribute
         if isinstance(attribute, Attribute):
             attribute_id = attribute.id
-        LabelAttribute.set_label_attribute(self._requester, self.project_id, self.id, attribute_id, value)
+        LabelAttribute._set_label_attribute(self._requester, self.project_id, self.id, attribute_id, value)

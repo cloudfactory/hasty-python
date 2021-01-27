@@ -76,7 +76,7 @@ class LabelClass(HastyObject):
             self._norder = data["norder"]
 
     @staticmethod
-    def create(requester, project_id, name, color=None, class_type="object", norder=None):
+    def _create(requester, project_id, name, color=None, class_type="object", norder=None):
         res = requester.post(LabelClass.endpoint.format(project_id=project_id),
                              json_data={"name": name,
                                         "color": color,

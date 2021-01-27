@@ -17,9 +17,9 @@ sys.path.insert(0, os.path.abspath('../..'))
 import hasty
 # -- Project information -----------------------------------------------------
 
-project = 'The Hasty Python Helper Library'
-copyright = '2021, Kostya Proskudin'
-author = 'Kostya Proskudin'
+project = 'Hasty API client library'
+copyright = '2021, Hasty GmbH'
+author = 'Hasty GmbH'
 
 # The full version, including alpha/beta/rc tags
 release = hasty.__version__

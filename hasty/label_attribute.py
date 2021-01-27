@@ -1,7 +1,4 @@
 from collections import OrderedDict
-from typing import Dict, List
-
-from .exception import ValidationException
 from .hasty_object import HastyObject
 
 
@@ -69,7 +66,7 @@ class LabelAttribute(HastyObject):
             self._value = data["value"]
 
     @staticmethod
-    def set_label_attribute(requester, project_id, label_id, attribute_id, value):
+    def _set_label_attribute(requester, project_id, label_id, attribute_id, value):
         res = requester.post(LabelAttribute.set_endpoint.format(project_id=project_id, label_id=label_id,
                                                                 attribute_id=attribute_id),
                              json_data={"value": value})
