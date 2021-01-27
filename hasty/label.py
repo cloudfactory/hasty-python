@@ -1,335 +1,257 @@
-from __future__ import absolute_import, division, print_function
+from collections import OrderedDict
+from uuid import UUID
+import numbers
 
-from . import api_requestor
+from .attribute import Attribute
+from .hasty_object import HastyObject
+from .helper import PaginatedList
+from .exception import LimitExceededException, ValidationException
+from .label_attribute import LabelAttribute
+from .label_class import LabelClass
+from .label_utils import check_bbox_format, check_rle_mask
 
 
-class Label:
-    """Class that contains some basic requests and features for labels."""
+C_LABELS_LIMIT = 100
+
+
+class Label(HastyObject):
     endpoint_image = '/v1/projects/{project_id}/images/{image_id}/labels'
     endpoint_project = '/v1/projects/{project_id}/labels'
 
-    @staticmethod
-    def list_project(API_class, project_id, offset=0, limit=100):
-        """ fetches a list of label given the offset and limit params from the project endpoint
+    def __repr__(self):
+        return self.get__repr__(OrderedDict({"id": self._id}))
 
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-        offset : int
-            query offset param (Default value = 0)
-        limit : int
-            query limit param (Default value = 100)
+    def __iter__(self):
+        yield 'id', self._id
+        yield 'project_id', self._project_id
+        yield 'image_id', self._image_id
+        yield 'class_id', self._class_id
+        yield 'bbox', self._bbox
+        yield 'polygon', self._polygon
+        yield 'mask', self._mask
+        yield 'z_index', self._z_index
 
-        Returns
-        -------
-        dict
-            label objects from project endpoint
-
+    @property
+    def id(self):
         """
-        json_data = {
-            'offset': offset,
-            'limit': limit
-        }
-        return api_requestor.get(API_class,
-                                 Label.endpoint_project.format(
-                                     project_id=project_id),
-                                 json_data=json_data)
-
-    @staticmethod
-    def list_image(API_class, project_id, image_id, offset=0, limit=100):
-        """ fetches a list of label given the offset and limit params from the image endpoint
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-        image_id : str
-            image id
-        offset : int
-            query offset param (Default value = 0)
-        limit : int
-            query limit param (Default value = 100)
-
-        Returns
-        -------
-        dict
-            label objects from project image
-
+        :type: string
         """
-        json_data = {
-            'offset': offset,
-            'limit': limit
-        }
-        return api_requestor.get(API_class,
-                                 Label.endpoint_image.format(project_id=project_id,
-                                                             image_id=image_id),
-                                 json_data=json_data)
+        return self._id
 
-    @staticmethod
-    def fetch_all_image(API_class, project_id, image_id):
-        """ fetches every labels of the given image using the image endpoint
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-        image_id : str
-            id of the image
-
-        Returns
-        -------
-        list [dict]
-            label objects from image endpoint
+    @property
+    def project_id(self):
         """
-        tot = []
-        n = Label.get_total_items_image(API_class, project_id, image_id)
-        for offset in range(0, n+1, 100):
-            tot += Label.list_image(API_class, project_id,
-                                    image_id, offset=offset)['items']
-        return tot
-
-    @staticmethod
-    def fetch_all_project(API_class, project_id, image_id):
-        """ fetches every labels in the project using the project endpoint
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-        image_id : str
-            id of the image
-
-        Returns
-        -------
-        list [dict]
-            label objects from project endpoint
-
+        :type: string
         """
-        tot = []
-        n = Label.get_total_items_project(API_class, project_id)
-        for offset in range(0, n+1, 100):
-            tot += Label.list_project(API_class,
-                                      project_id, offset=offset)['items']
-        return tot
+        return self._project_id
+
+    @property
+    def image_id(self):
+        """
+        :type: string
+        """
+        return self._image_id
+
+    @property
+    def class_id(self):
+        """
+        :type: string
+        """
+        return self._class_id
+
+    @property
+    def bbox(self):
+        """
+        :type: string
+        """
+        return self._bbox
+
+    @property
+    def polygon(self):
+        """
+        :type: string
+        """
+        return self._polygon
+
+    @property
+    def mask(self):
+        """
+        :type: string
+        """
+        return self._mask
+
+    @property
+    def z_index(self):
+        """
+        :type: string
+        """
+        return self._z_index
+
+    def _init_properties(self):
+        self._id = None
+        self._project_id = None
+        self._image_id = None
+        self._class_id = None
+        self._bbox = None
+        self._polygon = None
+        self._mask = None
+        self._z_index = None
+
+    def _set_prop_values(self, data):
+        if "id" in data:
+            self._id = data["id"]
+        if "project_id" in data:
+            self._project_id = data["project_id"]
+        if "image_id" in data:
+            self._image_id = data["image_id"]
+        if "class_id" in data:
+            self._class_id = data["class_id"]
+        if "bbox" in data:
+            self._bbox = data["bbox"]
+        if "polygon" in data:
+            self._polygon = data["polygon"]
+        if "mask" in data:
+            self._mask = data["mask"]
+        if "z_index" in data:
+            self._z_index = data["z_index"]
 
     @staticmethod
-    def fetch_all_images(API_class, project_id, image_ids):
-        """ fetches every labels from the image_ids iterable using the image endpoint
+    def _validate_label(class_id, bbox=None, polygon=None, mask=None, z_index=None):
+        try:
+            class_id = UUID(class_id)
+        except Exception:
+            raise ValidationException(f"Invalid UUID - {class_id}")
+        # Check bbox
+        if bbox is not None:
+            if not check_bbox_format(bbox):
+                raise ValidationException(f"Invalid bbox format - {bbox}")
+        # Check polygon
+        if polygon is not None:
+            if not isinstance(polygon, list):
+                raise ValidationException(f"Polygon must be a list of [x, y] pairs - {polygon}")
+            for v in polygon:
+                if not isinstance(v, list) and not isinstance(v, tuple):
+                    raise ValidationException(f"Polygon vertex must be a list of [x, y] - {polygon}")
+                if len(v) != 2:
+                    raise ValidationException(f"Polygon vertex must be a list of [x, y] - {polygon}")
+        else:
+            if bbox is None:
+                raise ValidationException(f"Polygon or bounding box must be provided")
+        # Check mask
+        if mask is not None:
+            if not check_rle_mask(bbox, mask):
+                raise ValidationException(f"Invalid mask - ({bbox}, {mask})")
 
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-        image_ids : iterable
-            iterable of image ids
-
-        Returns
-        -------
-        list [dict]
-            label objects from image endpoint
-
-        """
-        tot = []
-        for image_id in image_ids:
-            tot += Label.fetch_all_image(API_class, project_id, image_id)
-        return tot
-
-    @staticmethod
-    def create(API_class, project_id, image_id, class_id, bbox, mask, polygon, z_index=0):
-        """ create a new label for the given image
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-        image_id : str
-            image id
-        class_id : str
-            label class id
-        bbox : list [int]
-            bounding box coordinates
-        mask : list [int]
-            mask encoded label
-        polygon : list [int]
-            polygon label coordinates
-        z_index : int
-            z position index (Default value = 0)
-
-        Returns
-        -------
-        dict
-            label object
-
-        """
-        json_data = [{
-            'class_id': class_id,
-            'bbox': bbox,
-            'mask': mask,
-            'polygon': polygon,
-            'z_index': z_index
-        }]
-        return api_requestor.post(API_class,
-                                  Label.endpoint_image.format(project_id=project_id,
-                                                              image_id=image_id),
-                                  json_data=json_data)
+        if z_index:
+            if not isinstance(z_index, numbers.Number):
+                raise ValidationException(f"Z Index must be None or numeric, got - {z_index}")
 
     @staticmethod
-    def copy(API_class, project_id, items_to_copy, image_mapping, label_class_mapping):
-        """ copies a label object to the given image
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-        items_to_copy : dict
-            label objects to copy
-        image_mapping : dict
-            image ids mapping from src to dst
-        label_class_mapping :
-            label class ids mapping from src to dst
-
-        Returns
-        -------
-        dict
-            label objects
-
-        """
-        json_data = [{
-            'class_id': label_class_mapping[i['class_id']],
-            'bbox': i['bbox'],
-            'mask': i['mask'],
-            'polygon': i['polygon'],
-            'z_index': i['z_index'],
-            'tool_used': i['tool_used']
-        } for i in items_to_copy]
-        image_id = image_mapping[items_to_copy[0]['image_id']]
-        return api_requestor.post(API_class,
-                                  Label.endpoint_image.format(project_id=project_id,
-                                                              image_id=image_id),
-                                  json_data=json_data)
+    def _create(requester, project_id, image_id, class_id, bbox=None, polygon=None, mask=None, z_index=None):
+        new_labels = Label._batch_create(requester, project_id, image_id,
+                                        [{"class_id": class_id,
+                                          "bbox": bbox,
+                                          "polygon": polygon,
+                                          "mask": mask,
+                                          "z_index": z_index}])
+        return new_labels[0]
 
     @staticmethod
-    def edit(API_class, project_id, image_id, label_id, class_id, bbox, mask, polygon, z_index=0):
-        """ edits an existing label
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-        image_id : str
-            id of the image
-        label_id : str
-            id of the label
-        class_id : str
-            id of the label class
-        bbox : list [int]
-            bounding box coordinates
-        mask : list [int]
-            mask encoded label
-        polygon : list [int]
-            polygon label coordinates
-        z_index : int
-            z position index (Default value = 0)
-
-        Returns
-        -------
-
-        """
-        json_data = [{
-            'id': label_id,
-            'class_id': class_id,
-            'bbox': bbox,
-            'mask': mask,
-            'polygon': polygon,
-            'z_index': z_index
-        }]
-        return api_requestor.edit(API_class,
-                                  Label.endpoint_image.format(project_id=project_id,
-                                                              image_id=image_id),
-                                  json_data=json_data)
+    def _batch_create(requester, project_id, image_id, labels):
+        data = []
+        if len(labels) > C_LABELS_LIMIT:
+            raise LimitExceededException.max_labels_per_batch(len(labels))
+        for label in labels:
+            Label._validate_label(label["class_id"], label.get("bbox"), label.get("polygon"),
+                                  label.get("mask"), label.get("z_index"))
+            data.append({"class_id": label["class_id"],
+                         "bbox": label.get("bbox"),
+                         "polygon": label.get("polygon"),
+                         "mask": label.get("mask"),
+                         "z_index": label.get("z_index")})
+        res = requester.post(Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=data)
+        new_labels = []
+        for label in res["items"]:
+            new_labels.append(Label(requester, label, {"project_id": project_id, "image_id": image_id}))
+        return new_labels
 
     @staticmethod
-    def delete(API_class, project_id, image_id, label_ids):
-        """ deletes every labels in label_ids iterable from the given image
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-        image_id : str
-            image id
-        label_ids : iterable
-            iterable of label ids
-
-        Returns
-        -------
-        json
-            empty
-
-        """
-        if isinstance(label_ids, int):  # if a single ID value is gived, transform it into a list
-            label_ids = [label_ids]
-        json_data = {
-            'labels': [{'label_id': label_id} for label_id in label_ids]
-        }
-        return api_requestor.delete(API_class,
-                                    Label.endpoint_image.format(project_id=project_id,
-                                                                image_id=image_id),
-                                    json_data=json_data)
+    def _batch_update(requester, project_id, image_id, labels):
+        data = []
+        if len(labels) > 100:
+            raise LimitExceededException.max_labels_per_batch(len(labels))
+        for label in labels:
+            Label._validate_label(label["class_id"], label.get("bbox"), label.get("polygon"),
+                                 label.get("mask"), label.get("z_index"))
+            data.append({"label_id": label["label_id"],
+                         "class_id": label["class_id"],
+                         "bbox": label.get("bbox"),
+                         "polygon": label.get("polygon"),
+                         "mask": label.get("mask"),
+                         "z_index": label.get("z_index")})
+        res = requester.put(Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=data)
+        updated_labels = []
+        for label in res["items"]:
+            updated_labels.append(Label(requester, label, {"project_id": project_id, "image_id": image_id}))
+        return updated_labels
 
     @staticmethod
-    def get_total_items_project(API_class, project_id):
-        """ gets the number of labels in the given project
+    def _batch_delete(requester, project_id, image_id, label_ids):
+        data = []
+        for label_id in label_ids:
+            data.append({"id": label_id})
+        requester.delete(Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=data)
 
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-
-        Returns
-        -------
-        int
-            number of items in the project
-
+    def update(self, label_class, bbox=None, polygon=None, mask=None, z_index=None):
         """
-        return Label.list_project(API_class, project_id, limit=0)['meta']['total']
+        Update label properties
 
-    @staticmethod
-    def get_total_items_image(API_class, project_id, image_id):
-        """ gets the number of labels in the given image
-
-        Parameters
-        ----------
-        API_class : class
-            hasty.API class
-        project_id : str
-            id of the project
-
-        Returns
-        -------
-        int
-            number of items in the image
-
+        Args:
+            label_class (LabelClass, str): Label class or label class ID of the label
+            bbox (list of int): Coordinates of bounding box [x_min, y_min, x_max, y_max]
+            polygon (list): List of x, y pairs [[x0, y0], [x1, y1], .... [x0, y0]]
+            mask (list of int): RLE Encoded binary mask, (order right -> down)
+            z_index (float): Z index of the label. A label with greater value is in front of a label with a lower one.
         """
-        return Label.list_image(API_class, project_id, image_id, limit=0)['meta']['total']
+        class_id = label_class
+        if isinstance(label_class, LabelClass):
+            class_id = label_class.id
+        updated_labels = Label._batch_update(self._requester, self.project_id, self.image_id,
+                                            [{"label_id": self.id,
+                                              "class_id": class_id,
+                                              "bbox": bbox,
+                                              "polygon": polygon,
+                                              "mask": mask,
+                                              "z_index": z_index}])
+        updated_label = updated_labels[0]
+        self._class_id = updated_label.class_id
+        self._bbox = updated_label.bbox
+        self._polygon = updated_label.polygon
+        self._mask = updated_label.mask
+        self._z_index = updated_label.z_index
+
+    def delete(self):
+        """
+        Delete label
+        """
+        Label._batch_delete(self._requester, self.project_id, self.image_id, [self.id])
+
+    def get_attributes(self):
+        """
+        Get attributes values, list of :py:class:`~hasty.LabelAttribute` objects.
+        """
+        return PaginatedList(LabelAttribute, self._requester,
+                             LabelAttribute.endpoint.format(project_id=self.project_id, label_id=self.id))
+
+    def set_attribute(self, attribute, value):
+        """
+        Set label attribute
+
+        Args:
+            attribute (`~hasty.Attribute`, str) - `~hasty.Attribute` object or attribute id
+            value (str, float, int, bool, list of str) - Attribute value
+        """
+        attribute_id = attribute
+        if isinstance(attribute, Attribute):
+            attribute_id = attribute.id
+        LabelAttribute._set_label_attribute(self._requester, self.project_id, self.id, attribute_id, value)
