@@ -1,19 +1,11 @@
-# hasty-python
-Python library for the Hasty API.
+# Python library for the Hasty API.
+[![PyPI version](https://badge.fury.io/py/hasty.svg)](https://badge.fury.io/py/hasty)
+ |docs|
 
-## deployement to PyPi (pip)
-* python setup.py sdist
-* pip install twine
-* twine upload dist/*
-* [enter username and password]
-
-## installation (github)
-* git pull https://github.com/hasty-ai/hasty-python.git
-* cd hasty-python
-* pip install -e . 
-
-## installation (pip)
-* pip install hasty_python
+## Installation
+```
+ git pull hasty
+```
 
 ## Usage
 
@@ -21,8 +13,7 @@ Python library for the Hasty API.
 from hasty import Client
 
 API_KEY = "your_key"
-h = Client(api_key=API_KEY,
-           base_url='https://api.kp.none.kp.dev.hasty.ai')
+h = Client(api_key=API_KEY)
 
 projects = h.get_projects()
 print(projects)
