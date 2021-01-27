@@ -11,6 +11,9 @@ from .label_class import LabelClass
 from .label_utils import check_bbox_format, check_rle_mask
 
 
+C_LABELS_LIMIT = 100
+
+
 class Label(HastyObject):
     endpoint_image = '/v1/projects/{project_id}/images/{image_id}/labels'
     endpoint_project = '/v1/projects/{project_id}/labels'
@@ -125,7 +128,7 @@ class Label(HastyObject):
         # Check polygon
         if polygon is not None:
             if not isinstance(polygon, list):
-                raise ValidationException(f"Polygon must be a list of [x, y] paris - {polygon}")
+                raise ValidationException(f"Polygon must be a list of [x, y] pairs - {polygon}")
             for v in polygon:
                 if not isinstance(v, list) and not isinstance(v, tuple):
                     raise ValidationException(f"Polygon vertex must be a list of [x, y] - {polygon}")
@@ -156,11 +159,11 @@ class Label(HastyObject):
     @staticmethod
     def _batch_create(requester, project_id, image_id, labels):
         data = []
-        if len(labels) > 100:
+        if len(labels) > C_LABELS_LIMIT:
             raise LimitExceededException.max_labels_per_batch(len(labels))
         for label in labels:
             Label._validate_label(label["class_id"], label.get("bbox"), label.get("polygon"),
-                                 label.get("mask"), label.get("z_index"))
+                                  label.get("mask"), label.get("z_index"))
             data.append({"class_id": label["class_id"],
                          "bbox": label.get("bbox"),
                          "polygon": label.get("polygon"),
