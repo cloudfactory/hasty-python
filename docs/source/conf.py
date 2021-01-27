@@ -58,3 +58,15 @@ html_theme = 'alabaster'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+# -- Extension configuration -------------------------------------------------
+
+autodoc_inherit_docstrings = False
+napoleon_google_docstring = True
+napoleon_include_init_with_doc = True
+napoleon_numpy_docstring = False
+
+autodoc_mock_imports = [
+    'numpy',
+]
