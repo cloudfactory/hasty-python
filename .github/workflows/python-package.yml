@@ -37,3 +37,6 @@ jobs:
     - name: Test with unittest
       run: |
         python -m unittest discover tests
+      env:
+          HASTY_API_KEY: ${{ secrets.PYPI_USERNAME }}
+          HASTY_BASE_URL: ${{ secrets.HASTY_BASE_URL }}
