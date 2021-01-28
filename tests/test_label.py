@@ -41,7 +41,7 @@ class TestLabel(unittest.TestCase):
         poly2 = None
         mask2 = [1, 10, 20, 3]
         z_index2 = 4
-        label.update(self.label_class2, bbox2, poly2, mask2, z_index2)
+        label.edit(self.label_class2, bbox2, poly2, mask2, z_index2)
         self.validate_label_object(label, self.label_class2.id, bbox2, poly2, mask2, z_index2)
         labels = self.image.get_labels()
         self.assertEqual(1, len(labels))
