@@ -16,7 +16,7 @@ setup(
     url='https://github.com/hasty-ai/hasty-python/',
     author='Hasty GmbH',
     author_email="herbert@hasty.ai",
-    licence='MIT License',
+    license='MIT License',
     long_description_content_type="text/markdown",
     packages=['hasty'],
     setup_requires=[
