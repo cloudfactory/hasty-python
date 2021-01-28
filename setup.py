@@ -9,6 +9,9 @@ with codecs.open("hasty/__init__.py") as file:
         re.MULTILINE,
     ).group(1)
 
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
 setup(
     name='hasty',
     version=version,
@@ -17,6 +20,7 @@ setup(
     author='Hasty GmbH',
     author_email="herbert@hasty.ai",
     license='MIT License',
+    long_description=long_description,
     long_description_content_type="text/markdown",
     packages=['hasty'],
     setup_requires=[
