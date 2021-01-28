@@ -23,6 +23,12 @@ Python API
 .. autoclass:: Dataset
     :members:
 
+:py:class:`~Image`
+^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: Image
+    :members:
+
 :py:class:`~LabelClass`
 ^^^^^^^^^^^^^^^^^^^^^^^
 
