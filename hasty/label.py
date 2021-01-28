@@ -19,7 +19,7 @@ class Label(HastyObject):
     endpoint_project = '/v1/projects/{project_id}/labels'
 
     def __repr__(self):
-        return self.get__repr__(OrderedDict({"id": self._id}))
+        return self.get__repr__(OrderedDict({"id": self._id, "bbox": self._bbox, "polygon": self._polygon}))
 
     def __iter__(self):
         yield 'id', self._id
@@ -202,7 +202,7 @@ class Label(HastyObject):
             data.append({"id": label_id})
         requester.delete(Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=data)
 
-    def update(self, label_class, bbox=None, polygon=None, mask=None, z_index=None):
+    def edit(self, label_class, bbox=None, polygon=None, mask=None, z_index=None):
         """
         Update label properties
 
