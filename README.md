@@ -1,6 +1,8 @@
 # Python library for the Hasty API.
 [![PyPI version](https://badge.fury.io/py/hasty.svg)](https://badge.fury.io/py/hasty)
 [![Documentation Status](https://readthedocs.org/projects/hasty/badge/?version=latest)](https://hasty.readthedocs.io/en/latest/?badge=latest)
+![CI](https://github.com/hasty-ai/hasty-python/workflows/CI/badge.svg)
+
 
 ## Installation
 ```
