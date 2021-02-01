@@ -1,24 +1,14 @@
 from collections import OrderedDict
 from typing import List, Union
 import os
+import urllib.request
 
+from .constants import VALID_STATUSES
 from .hasty_object import HastyObject
 from .helper import PaginatedList
 from .exception import ValidationException
 from .label import Label
 from .label_class import LabelClass
-
-
-class ImageStatus:
-    New = "NEW"
-    Done = "DONE"
-    Skipped = "SKIPPED"
-    InProgress = "IN PROGRESS"
-    ToReview = "TO REVIEW"
-    AutoLabelled = "AUTO-LABELLED"
-
-
-VALID_STATUSES = [ImageStatus.New, ImageStatus.Done, ImageStatus.Skipped, ImageStatus.InProgress, ImageStatus.ToReview]
 
 
 class Image(HastyObject):
@@ -27,7 +17,8 @@ class Image(HastyObject):
     endpoint_image = '/v1/projects/{project_id}/images/{image_id}'
 
     def __repr__(self):
-        return self.get__repr__(OrderedDict({"id": self._id, "dataset_name": self._dataset_name, "name": self._name}))
+        return self.get__repr__(OrderedDict({"id": self._id, "dataset_name": self._dataset_name, "name": self._name,
+                                             "width": self._width, "height": self._height}))
 
     @property
     def id(self):
@@ -64,11 +55,43 @@ class Image(HastyObject):
         """
         return self._dataset_name
 
+    @property
+    def width(self):
+        """
+        :type: int
+        """
+        return self._width
+
+    @property
+    def height(self):
+        """
+        :type: int
+        """
+        return self._height
+
+    @property
+    def status(self):
+        """
+        :type: string
+        """
+        return self._status
+
+    @property
+    def public_url(self):
+        """
+        :type: string
+        """
+        return self._public_url
+
     def _init_properties(self):
         self._id = None
         self._name = None
         self._project_id = None
         self._dataset_name = None
+        self._width = None
+        self._height = None
+        self._status = None
+        self._public_url = None
 
     def _set_prop_values(self, data):
         if "id" in data:
@@ -81,6 +104,14 @@ class Image(HastyObject):
             self._dataset_id = data["dataset_id"]
         if "dataset_name" in data:
             self._dataset_name = data["dataset_name"]
+        if "width" in data:
+            self._width = data["width"]
+        if "height" in data:
+            self._height = data["height"]
+        if "status" in data:
+            self._status = data["status"]
+        if "public_url" in data:
+            self._public_url = data["public_url"]
 
     @staticmethod
     def _get_by_id(requester, project_id, image_id):
@@ -178,7 +209,7 @@ class Image(HastyObject):
         """
         Label._batch_delete(self._requester, self._project_id, self._id, label_ids)
 
-    def set_status(self, status):
+    def set_status(self, status: str):
         """
         Set image status
 
@@ -190,3 +221,12 @@ class Image(HastyObject):
         self._requester.put(Image.endpoint_image.format(project_id=self.project_id,
                                                         image_id=self.id)+"/status",
                             json_data={"status": status})
+
+    def download(self, filepath: str):
+        """
+        Downloads image to file
+
+        Args:
+            filepath (str): Local path
+        """
+        urllib.request.urlretrieve(self._public_url, filepath)
