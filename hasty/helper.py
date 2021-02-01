@@ -23,7 +23,7 @@ class PaginatedList:
 
     def __getitem__(self, idx):
         # Check idx and fetch next batch if needed
-        while len(self.items) < idx < self.total_count:
+        while len(self.items) <= idx < self.total_count:
             self.query_params['offset'] = self.offset
             new_data = self.requester.get(self.endpoint, self.query_params)
             self.items.extend(new_data["items"])
