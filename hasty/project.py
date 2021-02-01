@@ -2,6 +2,7 @@ from collections import OrderedDict
 from typing import List, Union
 
 from .attribute import Attribute
+from .constants import VALID_STATUSES
 from .dataset import Dataset
 from .hasty_object import HastyObject
 from .helper import PaginatedList
@@ -108,7 +109,7 @@ class Project(HastyObject):
 
     def create_dataset(self, name: str, norder: float = 0):
         """
-        Creates a new dataset
+        Creates a new dataset, returns `~hasty.Dataset` object
 
         Arguments:
             name (str): Name of the dataset
@@ -116,12 +117,47 @@ class Project(HastyObject):
         """
         return Dataset._create(self._requester, self._id, name, norder)
 
-    def get_images(self):
+    def get_images(self, dataset=None, image_status=None):
         """
         Retrieves the list of projects images.
+
+        Args:
+            dataset (str, `~hasty.Dataset`, list of str, list of `~hasty.Dataset`): filter images by dataset
+            image_status (str, list of str): Filters images by status, valid values are:
+
+             - "NEW"
+             - "DONE",
+             - "SKIPPED"
+             - "IN PROGRESS"
+             - "TO REVIEW"
+             - "AUTO-LABELLED"
+
         """
+        query_params = {}
+        if dataset:
+            if isinstance(dataset, str):
+                query_params["dataset_id"] = dataset
+            elif isinstance(dataset, Dataset):
+                query_params["dataset_id"] = dataset.id
+            elif isinstance(dataset, list):
+                dataset_ids = []
+                for d in dataset:
+                    if isinstance(d, str):
+                        dataset_ids.append(d)
+                    elif isinstance(d, Dataset):
+                        dataset_ids.append(d.id)
+                query_params["dataset_id"] = ','.join(dataset_ids)
+        if image_status:
+            if isinstance(image_status, str):
+                query_params["image_status"] = image_status
+            elif isinstance(image_status, list):
+                image_statuses = []
+                for status in image_status:
+                    if status in VALID_STATUSES:
+                        image_statuses.append(status)
+                query_params["image_status"] = ','.join(image_statuses)
         return PaginatedList(Image, self._requester,
-                             Image.endpoint.format(project_id=self._id))
+                             Image.endpoint.format(project_id=self._id), query_params=query_params)
 
     def get_image(self, image_id):
         """

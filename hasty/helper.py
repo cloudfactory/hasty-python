@@ -1,17 +1,16 @@
 class PaginatedList:
 
-    def __init__(self, content_class, requester, endpoint, obj_params=None):
+    def __init__(self, content_class, requester, endpoint, obj_params=None, query_params=None):
         self.content_class = content_class
         self.requester = requester
         self.offset = 0
         self.limit = 100
-        query_params = {
-            'offset': self.offset,
-            'limit': self.limit
-        }
+        self.query_params = query_params if query_params else dict()
+        self.query_params['offset'] = self.offset
+        self.query_params['limit'] = self.limit
         self.endpoint = endpoint
         self.obj_params = obj_params
-        data = self.requester.get(endpoint, query_params)
+        data = self.requester.get(endpoint, self.query_params)
         self.total_count = data['meta']['total']
         self.items = data['items']
         self.offset = len(self.items)
@@ -25,9 +24,10 @@ class PaginatedList:
     def __getitem__(self, idx):
         # Check idx and fetch next batch if needed
         while len(self.items) < idx < self.total_count:
-            query_params = {'offset': self.items, 'limit': self.limit}
-            new_data = self.requester.get(self.endpoint, query_params)
-            self.items.extend(new_data.items)
+            self.query_params['offset'] = self.offset
+            new_data = self.requester.get(self.endpoint, self.query_params)
+            self.items.extend(new_data["items"])
+            self.instances.extend([self.content_class(self.requester, cc, self.obj_params) for cc in new_data["items"]])
             self.total_count = new_data['meta']['total']
             self.offset = len(self.items)
         return self.instances[idx]
