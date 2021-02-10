@@ -157,7 +157,8 @@ class Project(HastyObject):
                         image_statuses.append(status)
                 query_params["image_status"] = ','.join(image_statuses)
         return PaginatedList(Image, self._requester,
-                             Image.endpoint.format(project_id=self._id), query_params=query_params)
+                             Image.endpoint.format(project_id=self._id), obj_params={"project_id": self.id},
+                             query_params=query_params)
 
     def get_image(self, image_id):
         """
@@ -201,7 +202,8 @@ class Project(HastyObject):
         Get label classes, list of :py:class:`~hasty.LabelClass` objects.
         """
         return PaginatedList(LabelClass, self._requester,
-                             LabelClass.endpoint.format(project_id=self._id))
+                             LabelClass.endpoint.format(project_id=self._id),
+                             obj_params={"project_id": self.id})
 
     def get_label_class(self, label_class_id: str):
         """
