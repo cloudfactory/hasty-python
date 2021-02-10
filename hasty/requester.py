@@ -1,5 +1,7 @@
 import requests
 
+from retrying import retry
+
 
 class Requester:
 
@@ -13,6 +15,7 @@ class Requester:
             'X-Session-Id': self.session_id
         }
 
+    @retry(stop_max_attempt_number=7, wait_fixed=2000)
     def request(self, method, endpoint, headers, params=None, json_data=None, data=None, files=None):
         url = self.base_url + endpoint
         if endpoint.startswith("http"):
