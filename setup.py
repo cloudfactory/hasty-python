@@ -26,7 +26,7 @@ setup(
     setup_requires=[
         "numpy>=1.16",
     ],
-    install_requires=["numpy>=1.16", 'requests >= 2.23.0'],
+    install_requires=["numpy>=1.16", 'requests >= 2.23.0', 'retrying==1.3.3'],
     python_requires=">=3.6",
     classifiers=[
         "Development Status :: 4 - Beta",
