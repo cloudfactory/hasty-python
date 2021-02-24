@@ -151,7 +151,8 @@ class Image(HastyObject):
         Returns image labels (list of `~hasty.Label` objects)
         """
         return PaginatedList(Label, self._requester,
-                             Label.endpoint_image.format(project_id=self.project_id, image_id=self.id))
+                             Label.endpoint_image.format(project_id=self.project_id, image_id=self.id),
+                             obj_params={"project_id": self.id})
 
     def create_label(self, label_class: Union[LabelClass, str], bbox: List[int] = None, polygon: List[List[int]] = None,
                      mask: List[int] = None, z_index: int = None):
