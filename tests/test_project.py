@@ -16,7 +16,6 @@ class TestProject(unittest.TestCase):
         ws0 = ws[0]
         self.assertEqual(36, len(ws0.id), 'Length of the id must be 36')
         self.assertTrue(isinstance(ws0.id, str), 'Workspace id must be string')
-        self.assertEqual(ws0.name, "HastyPy-UnitTests", "Name of the workspace should be predifined")
         projects = self.h.get_projects()
         self.assertEqual(0, len(projects), "There shouldn't be any projects")
         # Create project using ws entity
