@@ -2,8 +2,11 @@ from collections import OrderedDict
 from typing import List, Union
 
 from .attribute import Attribute
-from .constants import VALID_STATUSES
+from .constants import ImageStatus, SemanticFormat, VALID_EXPORT_FORMATS, VALID_SEMANTIC_ORDER, \
+    VALID_SEMANTIC_FORMATS, VALID_STATUSES
 from .dataset import Dataset
+from .export_job import ExportJob
+from .exception import ValidationException
 from .hasty_object import HastyObject
 from .helper import PaginatedList
 from .image import Image
@@ -283,3 +286,67 @@ class Project(HastyObject):
             - class_order - Order of classes within the attribute
         """
         return Attribute.delete_attributes_classes(self._requester, self._id, attribute_classes)
+
+    def export(self, name: str, export_format: str, dataset: Union[Dataset, str, List[Dataset], List[str]] = None,
+               image_status: Union[str, List[str]] = ImageStatus.Done, sign_urls: bool = False,
+               semantic_format: str = SemanticFormat.GS_ASC, labels_order: List[str] = None):
+        """
+        Initiate export job. Returns :py:class:`~hasty.ExportJob` object.
+
+        Args:
+            name (str): Name of the export file
+            export_format (str): Export format one of ["json_v1.1", "semantic_png", "json_coco", "images"]
+            dataset (`~hasty.Dataset`, str, list of `~hasty.Dataset`, list of str): List of the datasets to export
+            image_status (list of str, str): List of the image statuses to export. Default DONE
+            sign_urls (bool): Whether to generate sign urls for images. Default False
+            semantic_format (str): Format for semantic_png export. ["gs_desc", "gs_asc", "class_color"]
+            labels_order (list of str): Draw order for semantic_png export ["z_index", "class_type", "class_order"]
+        """
+        if export_format not in VALID_EXPORT_FORMATS:
+            raise ValidationException(f"Wrong export format {export_format}, expected one of {VALID_EXPORT_FORMATS}")
+        dataset_ids = []
+        if dataset:
+            if isinstance(dataset, str):
+                dataset_ids.append(dataset)
+            elif isinstance(dataset, Dataset):
+                dataset_ids.append(dataset.id)
+            elif isinstance(dataset, list) or isinstance(dataset, PaginatedList):
+                for d in dataset:
+                    if isinstance(d, str):
+                        dataset_ids.append(d)
+                    elif isinstance(d, Dataset):
+                        dataset_ids.append(d.id)
+        image_statuses = []
+        if image_status:
+            if isinstance(image_status, str) and image_status in VALID_STATUSES:
+                image_statuses.append(image_status)
+            elif isinstance(image_status, list):
+                for status in image_status:
+                    if status in VALID_STATUSES:
+                        image_statuses.append(status)
+
+        if semantic_format:
+            if semantic_format not in VALID_SEMANTIC_FORMATS:
+                raise ValidationException(f"Wrong semantic format {semantic_format}, "
+                                          f"expected one of {VALID_SEMANTIC_FORMATS}")
+
+        if labels_order:
+            if isinstance(labels_order, str):
+                if labels_order in VALID_SEMANTIC_ORDER:
+                    labels_order = [labels_order]
+                else:
+                    raise ValidationException(f"Wrong order {labels_order} expected one of {VALID_SEMANTIC_ORDER}")
+            elif isinstance(labels_order, list):
+                for lo in labels_order:
+                    if lo not in VALID_SEMANTIC_ORDER:
+                        raise ValidationException(f"Wrong order {labels_order} expected one of {VALID_SEMANTIC_ORDER}")
+
+        return ExportJob._create(requester=self._requester,
+                                 project_id=self._id,
+                                 name=name,
+                                 export_format=export_format,
+                                 dataset=dataset_ids,
+                                 image_status=image_statuses,
+                                 sign_urls=sign_urls,
+                                 semantic_format=semantic_format,
+                                 labels_order=labels_order)

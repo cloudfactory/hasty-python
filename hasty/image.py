@@ -215,7 +215,7 @@ class Image(HastyObject):
         Set image status
 
         Args:
-            status: New status on of ["NEW", "DONE", "SKIPPED", "IN PROGRESS", "TO REVIEW"]
+            status: New status one of ["NEW", "DONE", "SKIPPED", "IN PROGRESS", "TO REVIEW"]
         """
         if status not in VALID_STATUSES:
             raise ValidationException(f"Got {status}, expected on of {VALID_STATUSES}")
