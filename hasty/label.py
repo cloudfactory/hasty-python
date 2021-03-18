@@ -158,6 +158,8 @@ class Label(HastyObject):
 
     @staticmethod
     def _batch_create(requester, project_id, image_id, labels):
+        if len(labels) == 0:
+            return []
         data = []
         if len(labels) > C_LABELS_LIMIT:
             raise LimitExceededException.max_labels_per_batch(len(labels))
