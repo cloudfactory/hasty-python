@@ -1,8 +1,12 @@
 from collections import OrderedDict
-from typing import List, Union
+from time import time
+from typing import List
 import os
+import logging
 import urllib.request
 
+from .constants import WAIT_INTERVAL_SEC
+from .exception import ValidationException
 from .hasty_object import HastyObject
 from .requester import Requester
 
@@ -60,6 +64,7 @@ class ExportJob(HastyObject):
         self._started_on = None
         self._completed_on = None
         self._meta = None
+        self._last_check = None
 
     def _set_prop_values(self, data):
         if "id" in data:
@@ -93,8 +98,10 @@ class ExportJob(HastyObject):
         """
         Checks and returns the status of the export job.
         """
-        res = self._requester.get(ExportJob.endpoint_export.format(project_id=self._project_id, export_id=self._id))
-        self._set_prop_values(res)
+        if self._last_check is None or self._last_check > WAIT_INTERVAL_SEC:
+            res = self._requester.get(ExportJob.endpoint_export.format(project_id=self._project_id, export_id=self._id))
+            self._set_prop_values(res)
+            self._last_check = time()
         return self._status
 
     def download(self, local_folder='.'):
@@ -110,7 +117,6 @@ class ExportJob(HastyObject):
             filename = self._meta.get('export_name', 'export')+'.zip'
             filepath = os.path.join(local_folder, filename)
             urllib.request.urlretrieve(url, filepath)
-            print(f"File {filepath} saved")
+            logging.info(f"File {filepath} saved")
         else:
-            print("Export is still running")
-
+            raise ValidationException.export_in_progress()

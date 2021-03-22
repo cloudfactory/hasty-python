@@ -26,6 +26,8 @@ class SemanticOrder:
     CLASS_ORDER = "class_order"
 
 
+WAIT_INTERVAL_SEC = 10
+
 VALID_STATUSES = [ImageStatus.New, ImageStatus.Done, ImageStatus.Skipped, ImageStatus.InProgress, ImageStatus.ToReview,
                   ImageStatus.AutoLabelled]
 VALID_EXPORT_FORMATS = [ExportFormat.JSON_v11, ExportFormat.SEMANTIC_PNG, ExportFormat.JSON_COCO, ExportFormat.IMAGES]
