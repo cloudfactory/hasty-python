@@ -114,7 +114,7 @@ class ExportJob(HastyObject):
         self.check_status()
         if self._status == 'DONE':
             url = self._meta['url']
-            filename = self._meta.get('export_name', 'export')+'.zip'
+            filename = self._meta.get('export_name', 'export') + '.zip'
             filepath = os.path.join(local_folder, filename)
             urllib.request.urlretrieve(url, filepath)
             logging.info(f"File {filepath} saved")
