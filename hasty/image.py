@@ -152,7 +152,7 @@ class Image(HastyObject):
         """
         return PaginatedList(Label, self._requester,
                              Label.endpoint_image.format(project_id=self.project_id, image_id=self.id),
-                             obj_params={"project_id": self.id})
+                             obj_params={"project_id": self.project_id})
 
     def create_label(self, label_class: Union[LabelClass, str], bbox: List[int] = None, polygon: List[List[int]] = None,
                      mask: List[int] = None, z_index: int = None):
@@ -215,7 +215,7 @@ class Image(HastyObject):
         Set image status
 
         Args:
-            status: New status on of ["NEW", "DONE", "SKIPPED", "IN PROGRESS", "TO REVIEW"]
+            status: New status one of ["NEW", "DONE", "SKIPPED", "IN PROGRESS", "TO REVIEW"]
         """
         if status not in VALID_STATUSES:
             raise ValidationException(f"Got {status}, expected on of {VALID_STATUSES}")

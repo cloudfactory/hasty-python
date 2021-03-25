@@ -2,6 +2,10 @@ class ValidationException(Exception):
     def __init__(self, message):
         self.message = message
 
+    @classmethod
+    def export_in_progress(cls):
+        raise ValidationException("Export is still running")
+
 
 class LimitExceededException(Exception):
     def __init__(self, message):
