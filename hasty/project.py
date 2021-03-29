@@ -9,7 +9,7 @@ from .export_job import ExportJob
 from .exception import ValidationException
 from .hasty_object import HastyObject
 from .helper import PaginatedList
-from .inference import Detector
+from .inference import Detector, SemanticSegmentor
 from .image import Image
 from .label_class import LabelClass
 
@@ -354,5 +354,10 @@ class Project(HastyObject):
 
     def get_detector(self):
         d = Detector(self._requester, {"project_id": self._id})
+        d.discover_model()
+        return d
+
+    def get_semantic_segmentor(self):
+        d = SemanticSegmentor(self._requester, {"project_id": self._id})
         d.discover_model()
         return d
