@@ -9,6 +9,7 @@ from .export_job import ExportJob
 from .exception import ValidationException
 from .hasty_object import HastyObject
 from .helper import PaginatedList
+from .inference import Detector
 from .image import Image
 from .label_class import LabelClass
 
@@ -350,3 +351,8 @@ class Project(HastyObject):
                                  sign_urls=sign_urls,
                                  semantic_format=semantic_format,
                                  labels_order=labels_order)
+
+    def get_detector(self):
+        d = Detector(self._requester, {"project_id": self._id})
+        d.discover_model()
+        return d
