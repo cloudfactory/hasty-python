@@ -13,14 +13,17 @@ class Detector(Inference):
 
     def predict(self, image_url: str = None, image_path: str = None, confidence_threshold: float = 0.5,
                 max_detections_per_image: int = 100):
+        json_data = {"confidence_threshold": confidence_threshold,
+                     "max_detections_per_image": max_detections_per_image,
+                     "model_id": self._model_id}
         if image_path is not None:
             url_data = Image._generate_sign_url(self._requester, self._project_id)
             with open(image_path, 'rb') as f:
                 self._requester.put(url_data['url'], data=f.read(), content_type="image/*")
-            image_url = url_data['url']
+            upload_id = url_data['id']
+            json_data['upload_id'] = upload_id
+        else:
+            json_data['image_url'] = image_url
         response = self._requester.post(Detector.predict_endpoint.format(project_id=self._project_id),
-                                        json_data={"image_url": image_url,
-                                                   "confidence_threshold": confidence_threshold,
-                                                   "max_detections_per_image": max_detections_per_image,
-                                                   "model_id": self._model_id})
+                                        json_data=json_data)
         return response

@@ -1,7 +1,13 @@
+from collections import OrderedDict
 from hasty.hasty_object import HastyObject
 
 
 class Inference(HastyObject):
+
+    def __repr__(self):
+        return self.get__repr__(OrderedDict({"model_id": self._model_id,
+                                             "status": self._status}))
+
     @property
     def model_id(self):
         """
