@@ -136,7 +136,7 @@ class Label(HastyObject):
                     raise ValidationException(f"Polygon vertex must be a list of [x, y] - {polygon}")
         else:
             if bbox is None:
-                raise ValidationException(f"Polygon or bounding box must be provided")
+                raise ValidationException("Polygon or bounding box must be provided")
         # Check mask
         if mask is not None:
             if not check_rle_mask(bbox, mask):
@@ -149,11 +149,11 @@ class Label(HastyObject):
     @staticmethod
     def _create(requester, project_id, image_id, class_id, bbox=None, polygon=None, mask=None, z_index=None):
         new_labels = Label._batch_create(requester, project_id, image_id,
-                                        [{"class_id": class_id,
-                                          "bbox": bbox,
-                                          "polygon": polygon,
-                                          "mask": mask,
-                                          "z_index": z_index}])
+                                         [{"class_id": class_id,
+                                           "bbox": bbox,
+                                           "polygon": polygon,
+                                           "mask": mask,
+                                           "z_index": z_index}])
         return new_labels[0]
 
     @staticmethod
@@ -184,7 +184,7 @@ class Label(HastyObject):
             raise LimitExceededException.max_labels_per_batch(len(labels))
         for label in labels:
             Label._validate_label(label["class_id"], label.get("bbox"), label.get("polygon"),
-                                 label.get("mask"), label.get("z_index"))
+                                  label.get("mask"), label.get("z_index"))
             data.append({"label_id": label["label_id"],
                          "class_id": label["class_id"],
                          "bbox": label.get("bbox"),
@@ -219,12 +219,12 @@ class Label(HastyObject):
         if isinstance(label_class, LabelClass):
             class_id = label_class.id
         updated_labels = Label._batch_update(self._requester, self.project_id, self.image_id,
-                                            [{"label_id": self.id,
-                                              "class_id": class_id,
-                                              "bbox": bbox,
-                                              "polygon": polygon,
-                                              "mask": mask,
-                                              "z_index": z_index}])
+                                             [{"label_id": self.id,
+                                               "class_id": class_id,
+                                               "bbox": bbox,
+                                               "polygon": polygon,
+                                               "mask": mask,
+                                               "z_index": z_index}])
         updated_label = updated_labels[0]
         self._class_id = updated_label.class_id
         self._bbox = updated_label.bbox

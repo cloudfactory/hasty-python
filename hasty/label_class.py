@@ -96,9 +96,9 @@ class LabelClass(HastyObject):
         """
         self._requester.put(LabelClass.endpoint_class.format(project_id=self.project_id, label_class_id=self.id),
                             json_data={"name": name,
-                                        "color": color,
-                                        "type": class_type,
-                                        "norder": norder})
+                                       "color": color,
+                                       "type": class_type,
+                                       "norder": norder})
         self._name = name
         self._color = color
         self._class_type = class_type

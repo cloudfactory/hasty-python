@@ -4,6 +4,7 @@ import urllib.request
 
 from tests.utils import get_client, img_url
 
+
 class TestImage(unittest.TestCase):
     def setUp(self):
         self.h = get_client()
