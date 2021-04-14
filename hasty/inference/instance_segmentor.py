@@ -1,9 +1,12 @@
+import os
+
+from ..image import Image
 from .base import Inference
 
 
-class Detector(Inference):
-    model_check_endpoint = "/v1/projects/{project_id}/object_detector"
-    predict_endpoint = "/v1/projects/{project_id}/object_detection"
+class InstanceSegmentor(Inference):
+    model_check_endpoint = "/v1/projects/{project_id}/instance_segmentor"
+    predict_endpoint = "/v1/projects/{project_id}/instance_segmentation"
 
     def discover_model(self):
         """
@@ -25,12 +28,13 @@ class Detector(Inference):
         Returns:
             List of dict:
             - bbox (list of int): Coordinates of bounding box [x_min, y_min, x_max, y_max]
+            - mask (list of int): RLE Encoded binary mask, (order right -> down)
             - score (float): Confidence score
             - class_id (str): Label class ID
         """
         json_data = {"confidence_threshold": confidence_threshold,
                      "max_detections_per_image": max_detections_per_image,
                      "model_id": self._model_id}
-        response = self._predict(image_url, image_path, Detector.predict_endpoint,
-                                 Detector.model_check_endpoint, json_data)
+        response = self._predict(image_url, image_path, InstanceSegmentor.predict_endpoint,
+                                 InstanceSegmentor.model_check_endpoint, json_data)
         return response

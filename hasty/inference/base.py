@@ -1,5 +1,9 @@
 from collections import OrderedDict
+
 from hasty.hasty_object import HastyObject
+
+from ..image import Image
+from ..exception import InferenceException
 
 
 class Inference(HastyObject):
@@ -47,5 +51,20 @@ class Inference(HastyObject):
         res = self._requester.get(endpoint.format(project_id=self._project_id))
         self._set_prop_values(res)
 
-    def predict(self, image_url: str = None, image_path: str = None, **kwargs):
-        pass
+    def _predict(self, image_url: str, image_path: str, endpoint: str,
+                 discover_endpoint: str, json_data):
+        if self._status != 'LOADED':
+            self._discover_model(discover_endpoint)
+        if self._status != 'LOADED':
+            raise InferenceException.model_not_loaded()
+        if image_path is not None:
+            url_data = Image._generate_sign_url(self._requester, self._project_id)
+            with open(image_path, 'rb') as f:
+                self._requester.put(url_data['url'], data=f.read(), content_type="image/*")
+            upload_id = url_data['id']
+            json_data['upload_id'] = upload_id
+        else:
+            json_data['image_url'] = image_url
+        response = self._requester.post(endpoint.format(project_id=self._project_id),
+                                        json_data=json_data)
+        return response

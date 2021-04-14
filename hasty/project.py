@@ -9,7 +9,7 @@ from .export_job import ExportJob
 from .exception import ValidationException
 from .hasty_object import HastyObject
 from .helper import PaginatedList
-from .inference import Detector, SemanticSegmentor
+from .inference import Detector, InstanceSegmentor, SemanticSegmentor
 from .image import Image
 from .label_class import LabelClass
 
@@ -353,11 +353,25 @@ class Project(HastyObject):
                                  labels_order=labels_order)
 
     def get_detector(self):
+        """
+        Returns object detection model. Returns :py:class:`~hasty.Detector` object.
+        """
         d = Detector(self._requester, {"project_id": self._id})
         d.discover_model()
         return d
 
+    def get_instance_segmentor(self):
+        """
+        Returns instance segmentation model. Returns :py:class:`~hasty.InstanceSegmentor` object.
+        """
+        d = InstanceSegmentor(self._requester, {"project_id": self._id})
+        d.discover_model()
+        return d
+
     def get_semantic_segmentor(self):
+        """
+        Returns semantic segmentation model. Returns :py:class:`~hasty.SemanticSegmentor` object.
+        """
         d = SemanticSegmentor(self._requester, {"project_id": self._id})
         d.discover_model()
         return d

@@ -3,6 +3,7 @@ from hasty.client import Client
 from hasty.dataset import Dataset
 from hasty.export_job import ExportJob
 from hasty.image import Image
+from hasty.inference import Detector, InstanceSegmentor, SemanticSegmentor
 from hasty.label import Label
 from hasty.label_class import LabelClass
 from hasty.project import Project
@@ -23,8 +24,11 @@ __all__ = [
     'Attribute',
     'Client',
     'Dataset',
+    'Detector',
     'ExportJob',
+    'InstanceSegmentor',
     'LabelClass',
     'Project',
+    'SemanticSegmentor',
     'label_utils'
 ]
