@@ -1,6 +1,3 @@
-import os
-
-from ..image import Image
 from .base import Inference
 
 

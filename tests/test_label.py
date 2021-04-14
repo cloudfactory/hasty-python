@@ -51,7 +51,6 @@ class TestLabel(unittest.TestCase):
         labels = self.image.get_labels()
         self.assertEqual(0, len(labels))
 
-
     def tearDown(self) -> None:
         projects = self.h.get_projects()
         for p in projects:

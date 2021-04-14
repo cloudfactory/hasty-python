@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import Dict, List
+from typing import List
 
 from .exception import ValidationException
 from .hasty_object import HastyObject
@@ -88,7 +88,7 @@ class Attribute(HastyObject):
             self._norder = data["norder"]
         if "values" in data:
             self._values = data["values"]
-    
+
     @staticmethod
     def validate_type(attribute_type):
         if attribute_type not in ['SELECTION', 'MULTIPLE-SELECTION', 'TEXT', 'INT', 'FLOAT', 'BOOL']:
