@@ -23,6 +23,9 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=['hasty'],
+    package_data={
+        'hasty': ['inference/*']
+    },
     setup_requires=[
         "numpy>=1.16",
     ],
