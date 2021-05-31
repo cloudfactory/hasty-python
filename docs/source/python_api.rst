@@ -46,3 +46,27 @@ Python API
 
 .. autoclass:: Label
     :members:
+
+:py:class:`~Attributer`
+^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: Attributer
+    :members:
+
+:py:class:`~Detector`
+^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: Detector
+    :members:
+
+:py:class:`~InstanceSegmentor`
+^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: InstanceSegmentor
+    :members:
+
+:py:class:`~SemanticSegmentor`
+^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: SemanticSegmentor
+    :members:

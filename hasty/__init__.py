@@ -3,7 +3,7 @@ from hasty.client import Client
 from hasty.dataset import Dataset
 from hasty.export_job import ExportJob
 from hasty.image import Image
-from hasty.inference import Detector, InstanceSegmentor, SemanticSegmentor
+from hasty.inference import Attributer, Detector, InstanceSegmentor, SemanticSegmentor
 from hasty.label import Label
 from hasty.label_class import LabelClass
 from hasty.project import Project
@@ -17,11 +17,12 @@ def int_or_str(value):
         return value
 
 
-__version__ = '0.2.1'
+__version__ = '0.2.2'
 VERSION = tuple(map(int_or_str, __version__.split('.')))
 
 __all__ = [
     'Attribute',
+    'Attributer',
     'Client',
     'Dataset',
     'Detector',
