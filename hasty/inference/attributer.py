@@ -1,6 +1,8 @@
 from typing import List
 
 from .base import Inference
+from ..exception import ValidationException
+from ..label_utils import check_bbox_format
 
 
 class Attributer(Inference):
@@ -28,6 +30,17 @@ class Attributer(Inference):
             - attribute_id (str): Attribute  id
             - lov_ids (list of str): List of attribute values
         """
+        # Validate bboxes
+        if not isinstance(bboxes, list):
+            raise ValidationException("bboxes parameter must be a list of bboxes")
+        for bbox in bboxes:
+            if not isinstance(bbox, list):
+                raise ValidationException(f"Bounding box must be a list of inegers, got {type(bbox)}")
+            # Check bbox
+            if bbox is not None:
+                if not check_bbox_format(bbox):
+                    raise ValidationException(f"Invalid bbox format - {bbox}")
+
         json_data = {"bboxes": bboxes,
                      "model_id": self._model_id}
         response = self._predict(image_url, image_path, Attributer.predict_endpoint,
