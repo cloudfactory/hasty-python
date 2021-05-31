@@ -9,7 +9,7 @@ from .export_job import ExportJob
 from .exception import ValidationException
 from .hasty_object import HastyObject
 from .helper import PaginatedList
-from .inference import Detector, InstanceSegmentor, SemanticSegmentor
+from .inference import Attributer, Detector, InstanceSegmentor, SemanticSegmentor
 from .image import Image
 from .label_class import LabelClass
 
@@ -373,5 +373,13 @@ class Project(HastyObject):
         Returns semantic segmentation model. Returns :py:class:`~hasty.SemanticSegmentor` object.
         """
         d = SemanticSegmentor(self._requester, {"project_id": self._id})
+        d.discover_model()
+        return d
+
+    def get_attributer(self):
+        """
+        Returns active attributer model for the project. Returns :py:class:`~hasty.Attributer` object.
+        """
+        d = Attributer(self._requester, {"project_id": self._id})
         d.discover_model()
         return d
