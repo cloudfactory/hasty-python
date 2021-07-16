@@ -15,7 +15,8 @@ class Attributer(Inference):
         """
         self._discover_model(self.model_check_endpoint)
 
-    def predict(self, image_url: str = None, image_path: str = None, bboxes: List[List[str]] = None):
+    def predict(self, image_url: str = None, image_path: str = None, bboxes: List[List[str]] = None,
+                confidence_threshold: float = 0.5):
         """
         Returns predictions for provided image.
 
@@ -23,6 +24,7 @@ class Attributer(Inference):
             image_url (str): Image URL
             image_path (str): Path to local image file
             bboxes (list of list of int): List of bounding boxes [x_min, y_min, x_max, y_max]
+            confidence_threshold (float): Confidence threshold [0, 1) (default 0.5)
 
         Returns:
             List of List of dict:
@@ -42,7 +44,8 @@ class Attributer(Inference):
                     raise ValidationException(f"Invalid bbox format - {bbox}")
 
         json_data = {"bboxes": bboxes,
-                     "model_id": self._model_id}
+                     "model_id": self._model_id,
+                     "confidence_threshold": confidence_threshold}
         response = self._predict(image_url, image_path, Attributer.predict_endpoint,
                                  Attributer.model_check_endpoint, json_data)
         return response
