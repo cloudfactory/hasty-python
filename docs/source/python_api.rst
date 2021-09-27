@@ -35,6 +35,12 @@ Python API
 .. autoclass:: LabelClass
     :members:
 
+:py:class:`~TagClass`
+^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: TagClass
+    :members:
+
 :py:class:`~Attribute`
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -45,6 +51,12 @@ Python API
 ^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: Label
+    :members:
+
+:py:class:`~Tag`
+^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: Tag
     :members:
 
 :py:class:`~Attributer`

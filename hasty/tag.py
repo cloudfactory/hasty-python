@@ -83,7 +83,7 @@ class Tag(HastyObject):
                 data.append({"tag_class_id": tag["tag_class_id"]})
         res = requester.post(Tag.endpoint.format(project_id=project_id, image_id=image_id), json_data=data)
         new_tags = []
-        for tag in res["items"]:
+        for tag in res:
             new_tags.append(Tag(requester, tag, {"project_id": project_id, "image_id": image_id}))
         return new_tags
 
