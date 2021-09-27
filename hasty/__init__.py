@@ -7,6 +7,8 @@ from hasty.inference import Attributer, Detector, InstanceSegmentor, SemanticSeg
 from hasty.label import Label
 from hasty.label_class import LabelClass
 from hasty.project import Project
+from hasty.tag import Tag
+from hasty.tag_class import TagClass
 import hasty.label_utils as label_utils
 
 
@@ -33,5 +35,7 @@ __all__ = [
     'LabelClass',
     'Project',
     'SemanticSegmentor',
+    'Tag',
+    'TagClass',
     'label_utils'
 ]

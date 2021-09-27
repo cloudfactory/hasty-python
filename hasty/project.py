@@ -12,6 +12,7 @@ from .helper import PaginatedList
 from .inference import Attributer, Detector, InstanceSegmentor, SemanticSegmentor
 from .image import Image
 from .label_class import LabelClass
+from .tag_class import TagClass
 
 
 class Project(HastyObject):
@@ -230,6 +231,34 @@ class Project(HastyObject):
             norder (float, optional): Order in the Hasty tool
         """
         return LabelClass._create(self._requester, self._id, name, color, class_type, norder)
+
+    def get_tag_classes(self):
+        """
+        Get tag classes, list of :py:class:`~hasty.TagClass` objects.
+        """
+        return PaginatedList(TagClass, self._requester,
+                             TagClass.endpoint.format(project_id=self._id),
+                             obj_params={"project_id": self.id})
+
+    def get_tag_class(self, tag_class_id: str):
+        """
+        Get tag class by id, returns `~hasty.TagClass` object
+
+        Arguments:
+            tag_class_id (str): Tag class id
+        """
+        res = self._requester.get(TagClass.endpoint_class.format(project_id=self.id, tag_class_id=tag_class_id))
+        return TagClass(self._requester, res, {"project_id": self.id})
+
+    def create_tag_class(self, name: str, norder: float = None):
+        """
+        Create tag class, returns :py:class:`~hasty.TagClass` object.
+
+        Args:
+            name (str): Tag class name
+            norder (float, optional): Order in the Hasty tool
+        """
+        return TagClass._create(self._requester, self._id, name, norder)
 
     def get_attributes(self):
         """
