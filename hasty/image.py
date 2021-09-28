@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import List, Union
+from typing import Dict, List, Union
 import os
 import urllib.request
 
@@ -9,6 +9,8 @@ from .helper import PaginatedList
 from .exception import ValidationException
 from .label import Label
 from .label_class import LabelClass
+from .tag import Tag
+from .tag_class import TagClass
 
 
 class Image(HastyObject):
@@ -231,3 +233,32 @@ class Image(HastyObject):
             filepath (str): Local path
         """
         urllib.request.urlretrieve(self._public_url, filepath)
+
+    def get_tags(self):
+        """
+        Returns image tags (list of `~hasty.Tag` objects)
+        """
+        return PaginatedList(Tag, self._requester,
+                             Tag.endpoint.format(project_id=self.project_id, image_id=self.id),
+                             obj_params={"project_id": self.project_id, "image_id": self.id})
+
+    def add_tags(self, tags: List[Union[Dict, TagClass]]):
+        """
+        Create multiple tags. Returns a list of `~hasty.Tag` objects
+
+        Args:
+            tags (list of dict/`~hasty.TagClass`): List of tags, keys:
+                    tag_class_id: Tag class ID
+        """
+        return Tag._batch_create(self._requester, self._project_id, self._id, tags)
+
+    def delete_tags(self, tags: List[Union[Dict, Tag, TagClass]]):
+        """
+        Removes multiple tags
+
+        Args:
+            tags (list of dict/`~hasty.Tag`/`~hasty.TagClass`): List of tags, keys:
+                    tag_id: Tag ID of the label (optional if tag_class_id is specified)
+                    tag_class_id: Tag class ID of the label (optional if id is specified)
+        """
+        Tag._batch_delete(self._requester, self._project_id, self._id, tags)

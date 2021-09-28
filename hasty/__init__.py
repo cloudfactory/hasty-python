@@ -7,6 +7,8 @@ from hasty.inference import Attributer, Detector, InstanceSegmentor, SemanticSeg
 from hasty.label import Label
 from hasty.label_class import LabelClass
 from hasty.project import Project
+from hasty.tag import Tag
+from hasty.tag_class import TagClass
 import hasty.label_utils as label_utils
 
 
@@ -17,7 +19,7 @@ def int_or_str(value):
         return value
 
 
-__version__ = '0.2.3'
+__version__ = '0.3.0'
 VERSION = tuple(map(int_or_str, __version__.split('.')))
 
 __all__ = [
@@ -33,5 +35,7 @@ __all__ = [
     'LabelClass',
     'Project',
     'SemanticSegmentor',
+    'Tag',
+    'TagClass',
     'label_utils'
 ]
