@@ -8,8 +8,7 @@ class TagClass(HastyObject):
     endpoint_class = '/v1/projects/{project_id}/tag_classes/{tag_class_id}'
 
     def __repr__(self):
-        return self.get__repr__(OrderedDict({"id": self._id, "name": self._name, "color": self._color,
-                                             "type": self._class_type, "norder": self._norder}))
+        return self.get__repr__(OrderedDict({"id": self._id, "name": self._name, "norder": self._norder}))
 
     @property
     def id(self):
