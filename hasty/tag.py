@@ -95,7 +95,7 @@ class Tag(HastyObject):
                 data.append({"tag_class_id": tag.id})
             elif isinstance(tag, Tag):
                 data.append({"tag_id": tag.id})
-            elif "tag_class_id" not in tag and "id" not in tag:
+            elif "tag_class_id" not in tag and "tag_id" not in tag:
                 raise ValidationException(f"tag_class_id or tag_id property should be defined")
             else:
                 data.append({"tag_id": tag.get("tag_id"),
