@@ -60,12 +60,14 @@ class Tag(HastyObject):
     def _set_prop_values(self, data):
         if "id" in data:
             self._id = data["id"]
-        if "name" in data:
-            self._name = data["name"]
+        if "tag_class_name" in data:
+            self._tag_class_name = data["tag_class_name"]
+        if "tag_class_id" in data:
+            self._tag_class_id = data["tag_class_id"]
         if "project_id" in data:
             self._project_id = data["project_id"]
-        if "norder" in data:
-            self._norder = data["norder"]
+        if "image_id" in data:
+            self._image_id = data["image_id"]
 
     @staticmethod
     def _batch_create(requester, project_id, image_id, tags):
