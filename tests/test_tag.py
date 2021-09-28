@@ -49,6 +49,8 @@ class TestTag(unittest.TestCase):
         self.image.add_tags([tc1])
         tags = self.image.get_tags()
         self.assertEqual(1, len(tags), 'Should be one tag class assigned')
+        self.assertEqual(tc1.id, tags[0].tag_class_id, 'Tag class id should match')
+        self.assertEqual(tc1.name, tags[0].tag_class_name, 'Tag class id should match')
         # Assign by tag class id
         self.image.add_tags([{"tag_class_id": tc2.id}])
         tags = self.image.get_tags()
