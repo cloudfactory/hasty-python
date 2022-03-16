@@ -80,7 +80,7 @@ class Tag(HastyObject):
             if isinstance(tag, TagClass):
                 data.append({"tag_class_id": tag.id})
             elif "tag_class_id" not in tag:
-                raise ValidationException(f"tag_class_id property should be defined")
+                raise ValidationException("tag_class_id property should be defined")
             else:
                 data.append({"tag_class_id": tag["tag_class_id"]})
         res = requester.post(Tag.endpoint.format(project_id=project_id, image_id=image_id), json_data=data)
@@ -98,7 +98,7 @@ class Tag(HastyObject):
             elif isinstance(tag, Tag):
                 data.append({"tag_id": tag.id})
             elif "tag_class_id" not in tag and "tag_id" not in tag:
-                raise ValidationException(f"tag_class_id or tag_id property should be defined")
+                raise ValidationException("tag_class_id or tag_id property should be defined")
             else:
                 data.append({"tag_id": tag.get("tag_id"),
                              "tag_class_id": tag.get("tag_class_id")})

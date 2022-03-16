@@ -8,6 +8,7 @@ from .exception import AuthenticationException, AuthorisationException, Insuffic
 def if_http_exception(exception):
     return isinstance(exception, requests.exceptions.HTTPError)
 
+
 class Requester:
 
     def __init__(self, api_key, base_url='https://api.hasty.ai', session_id=None):

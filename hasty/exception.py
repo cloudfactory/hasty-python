@@ -15,6 +15,7 @@ class AuthenticationException(Exception):
     def failed_authentication(cls):
         raise AuthenticationException("Authentication failed, check your API key")
 
+
 class AuthorisationException(Exception):
     def __init__(self, message):
         self.message = message
@@ -40,6 +41,7 @@ class NotFound(Exception):
     @classmethod
     def object_not_found(cls):
         raise NotFound("Referred object not found, please check your script")
+
 
 class LimitExceededException(Exception):
     def __init__(self, message):

@@ -80,4 +80,3 @@ class TagClass(HastyObject):
         Deletes tag class
         """
         self._requester.delete(TagClass.endpoint_class.format(project_id=self.project_id, tag_class_id=self.id))
-
