@@ -1,7 +1,12 @@
 import requests
 
 from retrying import retry
+from .exception import AuthenticationException, AuthorisationException, InsufficientCredits, NotFound, \
+    ValidationException
 
+
+def if_http_exception(exception):
+    return isinstance(exception, requests.exceptions.HTTPError)
 
 class Requester:
 
@@ -15,7 +20,7 @@ class Requester:
         }
         self.cookies = dict(ui_last_state=self.session_id)
 
-    @retry(stop_max_attempt_number=7, wait_fixed=2000)
+    @retry(stop_max_attempt_number=7, wait_fixed=2000, retry_on_exception=if_http_exception)
     def request(self, method, endpoint, headers, params=None, json_data=None, data=None, files=None, cookies=None):
         url = self.base_url + endpoint
         if endpoint.startswith("http"):
@@ -29,6 +34,21 @@ class Requester:
                                     cookies=cookies,
                                     data=data,
                                     files=files)
+        if response.status_code == 400:
+            raise ValidationException(response.json().get("message"))
+
+        if response.status_code == 401:
+            raise AuthenticationException.failed_authentication()
+
+        if response.status_code == 402:
+            raise InsufficientCredits.insufficient_credits()
+
+        if response.status_code == 403:
+            raise AuthorisationException.permission_denied()
+
+        if response.status_code == 404:
+            raise NotFound.object_not_found()
+
         if response.status_code > 299:
             response.raise_for_status()
 
