@@ -222,9 +222,9 @@ class Image(HastyObject):
         """
         if status not in VALID_STATUSES:
             raise ValidationException(f"Got {status}, expected on of {VALID_STATUSES}")
-        response = self._requester.put(Image.endpoint_image.format(project_id=self.project_id,
+        self._requester.put(Image.endpoint_image.format(project_id=self.project_id,
                                                         image_id=self.id)+"/status",
-                                       json_data={"status": status})
+                            json_data={"status": status})
         self._status = status
 
     def download(self, filepath: str):
@@ -247,7 +247,6 @@ class Image(HastyObject):
                                                                      image_id=self.id),
                                          json_data={"filename": new_name})
         self._name = response.get("name")
-
 
     def move(self, dataset: Union[Dataset, str]):
         """

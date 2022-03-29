@@ -78,7 +78,6 @@ class TestImage(unittest.TestCase):
         images = self.project.get_images()
         self.assertEqual(0, len(images))
 
-
     def tearDown(self) -> None:
         projects = self.h.get_projects()
         for i in ["image.jpg", "tmp1.jpg"]:
