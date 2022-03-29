@@ -225,7 +225,7 @@ class Image(HastyObject):
         response = self._requester.put(Image.endpoint_image.format(project_id=self.project_id,
                                                         image_id=self.id)+"/status",
                                        json_data={"status": status})
-        self._status = response.get("status")
+        self._status = status
 
     def download(self, filepath: str):
         """
