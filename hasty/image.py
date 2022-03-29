@@ -6,6 +6,7 @@ import urllib.request
 from .constants import VALID_STATUSES
 from .hasty_object import HastyObject
 from .helper import PaginatedList
+from .dataset import Dataset
 from .exception import ValidationException
 from .label import Label
 from .label_class import LabelClass
@@ -221,9 +222,10 @@ class Image(HastyObject):
         """
         if status not in VALID_STATUSES:
             raise ValidationException(f"Got {status}, expected on of {VALID_STATUSES}")
-        self._requester.put(Image.endpoint_image.format(project_id=self.project_id,
+        response = self._requester.put(Image.endpoint_image.format(project_id=self.project_id,
                                                         image_id=self.id)+"/status",
-                            json_data={"status": status})
+                                       json_data={"status": status})
+        self._status = response.get("status")
 
     def download(self, filepath: str):
         """
@@ -233,6 +235,39 @@ class Image(HastyObject):
             filepath (str): Local path
         """
         urllib.request.urlretrieve(self._public_url, filepath)
+
+    def rename(self, new_name: str):
+        """
+        Rename image
+
+        Args:
+            new_name (str): New image name
+        """
+        response = self._requester.patch(Image.endpoint_image.format(project_id=self.project_id,
+                                                                     image_id=self.id),
+                                         json_data={"filename": new_name})
+        self._name = response.get("name")
+
+
+    def move(self, dataset: Union[Dataset, str]):
+        """
+        Move image to another dataset
+        """
+        dataset_id = dataset
+        if isinstance(dataset, Dataset):
+            dataset_id = dataset.id
+        response = self._requester.patch(Image.endpoint_image.format(project_id=self.project_id,
+                                                                     image_id=self.id),
+                                         json_data={"dataset_id": dataset_id})
+        self._dataset_id = response.get("dataset_id")
+        self._dataset_name = response.get("dataset_name")
+
+    def delete(self):
+        """
+        Removes image
+        """
+        self._requester.delete(Image.endpoint_image.format(project_id=self.project_id,
+                                                           image_id=self.id))
 
     def get_tags(self):
         """
