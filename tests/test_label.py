@@ -37,7 +37,7 @@ class TestLabel(unittest.TestCase):
         self.assertEqual(1, len(labels))
         self.validate_label_object(labels[0], self.label_class.id, bbox, poly, None, z_index)
         # Edit label
-        bbox2 = [b+5 for b in bbox]
+        bbox2 = [b + 5 for b in bbox]
         poly2 = None
         mask2 = [1, 10, 20, 3]
         z_index2 = 4

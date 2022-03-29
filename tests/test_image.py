@@ -55,6 +55,28 @@ class TestImage(unittest.TestCase):
         # Filter by datasets
         images = self.project.get_images(dataset=[ds2, ds3])
         self.assertEqual(3, len(images))
+        # Delete dataset
+        ds2.delete()
+        ds3.delete()
+
+    def test_image_rename_move_delete(self):
+        ds2 = self.project.create_dataset("ds2")
+        ds3 = self.project.create_dataset("ds3")
+        self.project.upload_from_url(ds2, "tmp1.jpg", img_url, True)
+        # Check image name
+        images = self.project.get_images()
+        image = images[0]
+        self.assertEqual("tmp1.jpg", image.name)
+        # Check rename feature
+        image.rename("tmp2.jpg")
+        self.assertEqual("tmp2.jpg", image.name)
+        # Check move feature
+        image.move(ds3)
+        self.assertEqual(ds3.name, image.dataset_name)
+        # Check delete
+        image.delete()
+        images = self.project.get_images()
+        self.assertEqual(0, len(images))
 
     def tearDown(self) -> None:
         projects = self.h.get_projects()

@@ -86,6 +86,13 @@ class Requester:
 
         return None, response.status_code
 
+    def patch(self, endpoint, json_data=None, content_type='application/json'):
+        self.headers['Content-Type'] = content_type
+        return self.request("PATCH", endpoint,
+                            headers=self.headers,
+                            json_data=json_data,
+                            cookies=self.cookies).json()
+
     def delete(self, endpoint, json_data=None):
         response = self.request("DELETE", endpoint,
                                 headers=self.headers,
