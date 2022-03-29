@@ -86,7 +86,7 @@ def check_rle_mask(bbox, mask):
 def polygon_area(polygon):
     np_poly = np.array(polygon)
     x, y = np_poly[:, 0], np_poly[:, 1]
-    return 0.5 * np.abs(np.dot(x, np.roll(y, 1))-np.dot(y, np.roll(x, 1)))
+    return 0.5 * np.abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
 
 
 def polygon2box(polygon: List[List[int]]):
