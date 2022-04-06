@@ -12,7 +12,7 @@ class TestAttribute(unittest.TestCase):
         ds = self.project.create_dataset("ds")
         self.image = self.project.upload_from_url(ds, "tmp1.jpg", img_url, True)
 
-    def validate_attrbute(self, attr, name, attribute_type, description, norder, values):
+    def validate_attribute(self, attr, name, attribute_type, description, norder, values):
         self.assertEqual(36, len(attr.id), 'Length of the id must be 36')
         self.assertEqual(name, attr.name)
         self.assertEqual(attribute_type, attr.attribute_type)
@@ -26,14 +26,14 @@ class TestAttribute(unittest.TestCase):
         self.assertEqual(0, len(attributes), 'Should be no attributes for a new project')
         # Create attribute
         attr = self.project.create_attribute("attr1", "SELECTION", "Some desc", 2, ["v1", "v2", "v3"])
-        self.validate_attrbute(attr, "attr1", "SELECTION", "Some desc", 2, ["v1", "v2", "v3"])
+        self.validate_attribute(attr, "attr1", "SELECTION", "Some desc", 2, ["v1", "v2", "v3"])
         # Update attribute
         attr.edit("attr2", "SELECTION", "Desc2", 3, ["v1", "v2"])
-        self.validate_attrbute(attr, "attr2", "SELECTION", "Desc2", 3, ["v1", "v2"])
+        self.validate_attribute(attr, "attr2", "SELECTION", "Desc2", 3, ["v1", "v2"])
         # Check get attributes
         attributes = self.project.get_attributes()
         self.assertEqual(1, len(attributes))
-        self.validate_attrbute(attributes[0], "attr2", "SELECTION", "Desc2", 3, ["v1", "v2"])
+        self.validate_attribute(attributes[0], "attr2", "SELECTION", "Desc2", 3, ["v1", "v2"])
         # Delete attribute
         attr.delete()
         attributes = self.project.get_attributes()
