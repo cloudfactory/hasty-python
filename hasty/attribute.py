@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import List
+from typing import List, Optional
 
 from .exception import ValidationException
 from .hasty_object import HastyObject
@@ -96,20 +96,20 @@ class Attribute(HastyObject):
                                       '[SELECTION, MULTIPLE-SELECTION, TEXT, INT, FLOAT, BOOL]')
 
     @staticmethod
-    def create(requester, project_id: str, name: str, attribute_type: str, description: str, norder: float,
-               values: List[str] = None):
+    def create(requester, project_id: str, name: str, attribute_type: str, description: Optional[str] = None,
+               norder: Optional[float] = None, values: List[str] = None):
         Attribute.validate_type(attribute_type)
-        list_of_values = [{"value": v} for v in values]
-        res = requester.post(Attribute.endpoint.format(project_id=project_id),
-                             json_data={"name": name,
-                                        "type": attribute_type,
-                                        "description": description,
-                                        "values": list_of_values,
-                                        "norder": norder})
+        json_data = {"name": name,
+                     "type": attribute_type,
+                     "description": description,
+                     "values": [{"value": v} for v in values],
+                     "norder": norder}
+
+        res = requester.post(Attribute.endpoint.format(project_id=project_id), json_data=json_data)
         return Attribute(requester, res, {"project_id": project_id})
 
-    def edit(self, name: str, attribute_type: str, description: str, norder: float,
-             values: List[str] = None):
+    def edit(self, name: str, attribute_type: str, description: Optional[str] = None,
+             norder: Optional[float] = None, values: List[str] = None):
         """
         Edit attribute properties
 
@@ -121,13 +121,14 @@ class Attribute(HastyObject):
             norder (float, optional): Order in the Hasty tool
             values (list of str): List of values for SELECTION and MULTIPLE-SELECTION attribute type
         """
-        list_of_values = [{"value": v} for v in values]
+        json_data = {"name": name,
+                     "type": attribute_type,
+                     "description": description,
+                     "norder": norder,
+                     "values": [{"value": v} for v in values]}
+
         res = self._requester.put(Attribute.endpoint_attribute.format(project_id=self.project_id, attribute_id=self.id),
-                                  json_data={"name": name,
-                                             "type": attribute_type,
-                                             "description": description,
-                                             "norder": norder,
-                                             "values": list_of_values})
+                                  json_data=json_data)
         self._name = res["name"]
         self._attribute_type = res["type"]
         self._description = res["description"]

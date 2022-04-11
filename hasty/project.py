@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import List, Union
+from typing import List, Union, Optional
 
 from .attribute import Attribute
 from .constants import ImageStatus, SemanticFormat, VALID_EXPORT_FORMATS, VALID_SEMANTIC_ORDER, \
@@ -265,10 +265,11 @@ class Project(HastyObject):
         Get label classes, list of :py:class:`~hasty.Attribute` objects.
         """
         return PaginatedList(Attribute, self._requester,
-                             Attribute.endpoint.format(project_id=self._id))
+                             Attribute.endpoint.format(project_id=self._id),
+                             obj_params={"project_id": self.id})
 
-    def create_attribute(self, name: str, attribute_type: str, description: str, norder: float,
-                         values: List[str] = None):
+    def create_attribute(self, name: str, attribute_type: str, description: Optional[str] = None,
+               norder: Optional[float] = None, values: List[str] = None):
         """
         Create attribute, returns :py:class:`~hasty.Attribute` object.
 
