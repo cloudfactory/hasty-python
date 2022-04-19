@@ -174,20 +174,22 @@ class Project(HastyObject):
         """
         return Image._get_by_id(self._requester, self._id, image_id)
 
-    def upload_from_file(self, dataset, filepath):
+    def upload_from_file(self, dataset, filepath, external_id: str = None):
         """
         Uploads image from the given filepath
 
         Args:
             dataset (`~hasty.Dataset`, str): Dataset object or id that the image should belongs to
             filepath (str): Local path
+            external_id (str): External ID (optional)
         """
         dataset_id = dataset
         if isinstance(dataset, Dataset):
             dataset_id = dataset.id
-        return Image._upload_from_file(self._requester, self._id, dataset_id, filepath)
+        return Image._upload_from_file(self._requester, self._id, dataset_id, filepath, external_id)
 
-    def upload_from_url(self, dataset: Union[Dataset, str], filename: str, url: str, copy_original: bool = True):
+    def upload_from_url(self, dataset: Union[Dataset, str], filename: str, url: str, copy_original: bool = True,
+                        external_id: str = None):
         """
         Uploads image from a given URL
 
@@ -196,11 +198,13 @@ class Project(HastyObject):
             filename (str): Filename of the image
             url (str): Image url
             copy_original (str): If True Hasty makes a copy of the image. Default True.
+            external_id (str): External ID (optional)
         """
         dataset_id = dataset
         if isinstance(dataset, Dataset):
             dataset_id = dataset.id
-        return Image._upload_from_url(self._requester, self._id, dataset_id, filename, url, copy_original=copy_original)
+        return Image._upload_from_url(self._requester, self._id, dataset_id, filename, url, copy_original=copy_original,
+                                      external_id=external_id)
 
     def get_label_classes(self):
         """

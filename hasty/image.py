@@ -86,6 +86,13 @@ class Image(HastyObject):
         """
         return self._public_url
 
+    @property
+    def external_id(self):
+        """
+        :type: string
+        """
+        return self._external_id
+
     def _init_properties(self):
         self._id = None
         self._name = None
@@ -95,6 +102,7 @@ class Image(HastyObject):
         self._height = None
         self._status = None
         self._public_url = None
+        self._external_id = None
 
     def _set_prop_values(self, data):
         if "id" in data:
@@ -115,6 +123,8 @@ class Image(HastyObject):
             self._status = data["status"]
         if "public_url" in data:
             self._public_url = data["public_url"]
+        if "external_id" in data:
+            self._external_id = data["external_id"]
 
     @staticmethod
     def _get_by_id(requester, project_id, image_id):
@@ -127,7 +137,7 @@ class Image(HastyObject):
         return data["items"][0]
 
     @staticmethod
-    def _upload_from_file(requester, project_id, dataset_id, filepath):
+    def _upload_from_file(requester, project_id, dataset_id, filepath, external_id: str = None):
         filename = os.path.basename(filepath)
         url_data = Image._generate_sign_url(requester, project_id)
         with open(filepath, 'rb') as f:
@@ -135,17 +145,20 @@ class Image(HastyObject):
         res = requester.post(Image.endpoint.format(project_id=project_id),
                              json_data={"dataset_id": dataset_id,
                                         "filename": filename,
-                                        "upload_id": url_data["id"]})
+                                        "upload_id": url_data["id"],
+                                        "external_id": external_id})
         return Image(requester, res, {"project_id": project_id,
                                       "dataset_id": dataset_id})
 
     @staticmethod
-    def _upload_from_url(requester, project_id, dataset_id, filename, url, copy_original=True):
+    def _upload_from_url(requester, project_id, dataset_id, filename, url, copy_original=True,
+                         external_id: str = None):
         res = requester.post(Image.endpoint.format(project_id=project_id),
                              json_data={"dataset_id": dataset_id,
                                         "filename": filename,
                                         "url": url,
-                                        "copy_original": copy_original})
+                                        "copy_original": copy_original,
+                                        "external_id": external_id})
         return Image(requester, res, {"project_id": project_id,
                                       "dataset_id": dataset_id})
 
