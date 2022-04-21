@@ -224,7 +224,8 @@ class Project(HastyObject):
         res = self._requester.get(LabelClass.endpoint_class.format(project_id=self.id, label_class_id=label_class_id))
         return LabelClass(self._requester, res, {"project_id": self.id})
 
-    def create_label_class(self, name: str, color: str = None, class_type: str = "object", norder: float = None):
+    def create_label_class(self, name: str, color: str = None, class_type: str = "object", norder: float = None,
+                           external_id: str = None):
         """
         Create label class, returns :py:class:`~hasty.LabelClass` object.
 
@@ -233,8 +234,9 @@ class Project(HastyObject):
             color (str, optional): Color in HEX format #0f0f0faa
             class_type (str, optional): Class type [object or background] (default object)
             norder (float, optional): Order in the Hasty tool
+            external_id (str, optional): External Identifier
         """
-        return LabelClass._create(self._requester, self._id, name, color, class_type, norder)
+        return LabelClass._create(self._requester, self._id, name, color, class_type, norder, external_id=external_id)
 
     def get_tag_classes(self):
         """

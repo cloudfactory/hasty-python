@@ -53,6 +53,13 @@ class LabelClass(HastyObject):
         """
         return self._norder
 
+    @property
+    def external_id(self):
+        """
+        :type: string
+        """
+        return self._external_id
+
     def _init_properties(self):
         self._id = None
         self._name = None
@@ -60,6 +67,7 @@ class LabelClass(HastyObject):
         self._color = None
         self._class_type = None
         self._norder = None
+        self._external_id = None
 
     def _set_prop_values(self, data):
         if "id" in data:
@@ -74,17 +82,20 @@ class LabelClass(HastyObject):
             self._class_type = data["type"]
         if "norder" in data:
             self._norder = data["norder"]
+        if "external_id" in data:
+            self._external_id = data["external_id"]
 
     @staticmethod
-    def _create(requester, project_id, name, color=None, class_type="object", norder=None):
+    def _create(requester, project_id, name, color=None, class_type="object", norder=None, external_id=None):
         res = requester.post(LabelClass.endpoint.format(project_id=project_id),
                              json_data={"name": name,
                                         "color": color,
                                         "type": class_type,
-                                        "norder": norder})
+                                        "norder": norder,
+                                        "external_id": external_id})
         return LabelClass(requester, res, {"project_id": project_id})
 
-    def edit(self, name, color=None, class_type="object", norder=None):
+    def edit(self, name, color=None, class_type="object", norder=None, external_id=None):
         """
         Edit label class properties
 
@@ -93,16 +104,19 @@ class LabelClass(HastyObject):
             color (str, optional): Color in HEX format #0f0f0faa
             class_type (str, optional): Class type [object or background] (default object)
             norder (float, optional): Order in the Hasty tool
+            external_id (str, optional): External identifier
         """
         self._requester.put(LabelClass.endpoint_class.format(project_id=self.project_id, label_class_id=self.id),
                             json_data={"name": name,
                                        "color": color,
                                        "type": class_type,
-                                       "norder": norder})
+                                       "norder": norder,
+                                       "external_id": external_id})
         self._name = name
         self._color = color
         self._class_type = class_type
         self._norder = norder
+        self._external_id = external_id
 
     def delete(self):
         """
