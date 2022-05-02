@@ -87,6 +87,13 @@ class Label(HastyObject):
         """
         return self._z_index
 
+    @property
+    def external_id(self):
+        """
+        :type: string
+        """
+        return self._external_id
+
     def _init_properties(self):
         self._id = None
         self._project_id = None
@@ -96,6 +103,7 @@ class Label(HastyObject):
         self._polygon = None
         self._mask = None
         self._z_index = None
+        self._external_id = None
 
     def _set_prop_values(self, data):
         if "id" in data:
@@ -114,6 +122,8 @@ class Label(HastyObject):
             self._mask = data["mask"]
         if "z_index" in data:
             self._z_index = data["z_index"]
+        if "external_id" in data:
+            self._external_id = data["external_id"]
 
     @staticmethod
     def _validate_label(class_id, bbox=None, polygon=None, mask=None, z_index=None):
@@ -147,13 +157,15 @@ class Label(HastyObject):
                 raise ValidationException(f"Z Index must be None or numeric, got - {z_index}")
 
     @staticmethod
-    def _create(requester, project_id, image_id, class_id, bbox=None, polygon=None, mask=None, z_index=None):
+    def _create(requester, project_id, image_id, class_id, bbox=None, polygon=None, mask=None, z_index=None,
+                external_id=None):
         new_labels = Label._batch_create(requester, project_id, image_id,
                                          [{"class_id": class_id,
                                            "bbox": bbox,
                                            "polygon": polygon,
                                            "mask": mask,
-                                           "z_index": z_index}])
+                                           "z_index": z_index,
+                                           "external_id": external_id}])
         return new_labels[0]
 
     @staticmethod
@@ -170,7 +182,8 @@ class Label(HastyObject):
                          "bbox": label.get("bbox"),
                          "polygon": label.get("polygon"),
                          "mask": label.get("mask"),
-                         "z_index": label.get("z_index")})
+                         "z_index": label.get("z_index"),
+                         "external_id": label.get("external_id")})
         res = requester.post(Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=data)
         new_labels = []
         for label in res["items"]:
@@ -190,7 +203,8 @@ class Label(HastyObject):
                          "bbox": label.get("bbox"),
                          "polygon": label.get("polygon"),
                          "mask": label.get("mask"),
-                         "z_index": label.get("z_index")})
+                         "z_index": label.get("z_index"),
+                         "external_id": label.get("external_id")})
         res = requester.put(Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=data)
         updated_labels = []
         for label in res["items"]:
@@ -204,7 +218,7 @@ class Label(HastyObject):
             data.append({"id": label_id})
         requester.delete(Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=data)
 
-    def edit(self, label_class, bbox=None, polygon=None, mask=None, z_index=None):
+    def edit(self, label_class, bbox=None, polygon=None, mask=None, z_index=None, external_id=None):
         """
         Update label properties
 
@@ -214,6 +228,7 @@ class Label(HastyObject):
             polygon (list): List of x, y pairs [[x0, y0], [x1, y1], .... [x0, y0]]
             mask (list of int): RLE Encoded binary mask, (order right -> down)
             z_index (float): Z index of the label. A label with greater value is in front of a label with a lower one.
+            external_id (str, optional): External Identifier
         """
         class_id = label_class
         if isinstance(label_class, LabelClass):
@@ -224,13 +239,15 @@ class Label(HastyObject):
                                                "bbox": bbox,
                                                "polygon": polygon,
                                                "mask": mask,
-                                               "z_index": z_index}])
+                                               "z_index": z_index,
+                                               "external_id": external_id}])
         updated_label = updated_labels[0]
         self._class_id = updated_label.class_id
         self._bbox = updated_label.bbox
         self._polygon = updated_label.polygon
         self._mask = updated_label.mask
         self._z_index = updated_label.z_index
+        self._external_id = updated_label.external_id
 
     def delete(self):
         """

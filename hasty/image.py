@@ -171,7 +171,7 @@ class Image(HastyObject):
                              obj_params={"project_id": self.project_id})
 
     def create_label(self, label_class: Union[LabelClass, str], bbox: List[int] = None, polygon: List[List[int]] = None,
-                     mask: List[int] = None, z_index: int = None):
+                     mask: List[int] = None, z_index: int = None, external_id: str = None):
         """
         Create label
 
@@ -181,11 +181,13 @@ class Image(HastyObject):
             polygon (list): List of x, y pairs [[x0, y0], [x1, y1], .... [x0, y0]]
             mask (list of int): RLE Encoded binary mask, (order right -> down)
             z_index (int): Z index of the label. A label with greater value is in front of a label with a lower one.
+            external_id (str, optional): External Identifier
         """
         class_id = label_class
         if isinstance(label_class, LabelClass):
             class_id = label_class.id
-        label = Label._create(self._requester, self._project_id, self._id, class_id, bbox, polygon, mask, z_index)
+        label = Label._create(self._requester, self._project_id, self._id, class_id, bbox, polygon, mask, z_index,
+                              external_id)
         return label
 
     def create_labels(self, labels):
@@ -199,6 +201,7 @@ class Image(HastyObject):
                     polygon: List of x, y pairs [[x0, y0], [x1, y1], .... [x0, y0]]
                     mask: RLE Encoded binary mask, (order right -> down)
                     z_index: Z index of the label.
+                    external_id: External Identifier
         """
         return Label._batch_create(self._requester, self._project_id, self._id, labels)
 
@@ -214,6 +217,7 @@ class Image(HastyObject):
                     polygon: List of x, y pairs [[x0, y0], [x1, y1], .... [x0, y0]]
                     mask: RLE Encoded binary mask, (order right -> down)
                     z_index: Z index of the label.
+                    external_id: External identifier
         """
         return Label._batch_update(self._requester, self._project_id, self._id, labels)
 
