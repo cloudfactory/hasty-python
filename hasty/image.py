@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 import os
 import urllib.request
 
@@ -137,7 +137,7 @@ class Image(HastyObject):
         return data["items"][0]
 
     @staticmethod
-    def _upload_from_file(requester, project_id, dataset_id, filepath, external_id: str = None):
+    def _upload_from_file(requester, project_id, dataset_id, filepath, external_id: Optional[str] = None):
         filename = os.path.basename(filepath)
         url_data = Image._generate_sign_url(requester, project_id)
         with open(filepath, 'rb') as f:
@@ -152,7 +152,7 @@ class Image(HastyObject):
 
     @staticmethod
     def _upload_from_url(requester, project_id, dataset_id, filename, url, copy_original=True,
-                         external_id: str = None):
+                         external_id: Optional[str] = None):
         res = requester.post(Image.endpoint.format(project_id=project_id),
                              json_data={"dataset_id": dataset_id,
                                         "filename": filename,
@@ -171,7 +171,7 @@ class Image(HastyObject):
                              obj_params={"project_id": self.project_id})
 
     def create_label(self, label_class: Union[LabelClass, str], bbox: List[int] = None, polygon: List[List[int]] = None,
-                     mask: List[int] = None, z_index: int = None, external_id: str = None):
+                     mask: List[int] = None, z_index: int = None, external_id: Optional[str] = None):
         """
         Create label
 

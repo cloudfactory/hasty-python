@@ -174,7 +174,7 @@ class Project(HastyObject):
         """
         return Image._get_by_id(self._requester, self._id, image_id)
 
-    def upload_from_file(self, dataset, filepath, external_id: str = None):
+    def upload_from_file(self, dataset, filepath, external_id: Optional[str] = None):
         """
         Uploads image from the given filepath
 
@@ -189,7 +189,7 @@ class Project(HastyObject):
         return Image._upload_from_file(self._requester, self._id, dataset_id, filepath, external_id)
 
     def upload_from_url(self, dataset: Union[Dataset, str], filename: str, url: str, copy_original: bool = True,
-                        external_id: str = None):
+                        external_id: Optional[str] = None):
         """
         Uploads image from a given URL
 
@@ -225,7 +225,7 @@ class Project(HastyObject):
         return LabelClass(self._requester, res, {"project_id": self.id})
 
     def create_label_class(self, name: str, color: str = None, class_type: str = "object", norder: float = None,
-                           external_id: str = None):
+                           external_id: Optional[str] = None):
         """
         Create label class, returns :py:class:`~hasty.LabelClass` object.
 
