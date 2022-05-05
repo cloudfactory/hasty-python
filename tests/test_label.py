@@ -51,6 +51,24 @@ class TestLabel(unittest.TestCase):
         labels = self.image.get_labels()
         self.assertEqual(0, len(labels))
 
+    def test_external_id_for_label(self):
+        # Create label
+        bbox = [10, 10, 50, 50]
+        poly = [[10, 20], [20, 44], [10, 15]]
+        z_index = 3
+        label = self.image.create_label(self.label_class, bbox, poly, z_index=z_index, external_id="ext_id_1")
+        self.assertEqual("ext_id_1", label.external_id)
+        labels = self.image.get_labels()
+        self.assertEqual(1, len(labels))
+        self.assertEqual("ext_id_1", labels[0].external_id)
+        # Edit label
+
+        label.edit(self.label_class2, bbox, poly, external_id="ext_id_2")
+        self.assertEqual("ext_id_2", label.external_id)
+        labels = self.image.get_labels()
+        self.assertEqual(1, len(labels))
+        self.assertEqual("ext_id_2", labels[0].external_id)
+
     def tearDown(self) -> None:
         projects = self.h.get_projects()
         for p in projects:

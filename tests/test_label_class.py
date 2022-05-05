@@ -40,6 +40,20 @@ class TestLabelClass(unittest.TestCase):
         label_classes = self.project.get_label_classes()
         self.assertEqual(0, len(label_classes), 'Should not be any label classes')
 
+    def test_external_id(self):
+        # Create label class
+        lc = self.project.create_label_class("class1", "#ff00aa99", "object", 2, external_id="ext_id_1")
+        self.assertEqual("ext_id_1", lc.external_id)
+        # Check DB
+        lc_copy = self.project.get_label_class(lc.id)
+        self.assertEqual("ext_id_1", lc_copy.external_id)
+        # Update
+        lc.edit("class2", "#ff88aa99", "background", 3, external_id="ext_id_2")
+        self.assertEqual("ext_id_2", lc.external_id)
+        # Check DB
+        lc_copy = self.project.get_label_class(lc.id)
+        self.assertEqual("ext_id_2", lc_copy.external_id)
+
     def tearDown(self) -> None:
         projects = self.h.get_projects()
         for p in projects:

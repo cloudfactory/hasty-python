@@ -78,6 +78,15 @@ class TestImage(unittest.TestCase):
         images = self.project.get_images()
         self.assertEqual(0, len(images))
 
+    def test_external_ids(self):
+        ds2 = self.project.create_dataset("dsE")
+        img = self.project.upload_from_url(ds2, "tmp1.jpg", img_url, True, "EXTERNAL_ID")
+        self.assertEqual("EXTERNAL_ID", img.external_id)
+        images = self.project.get_images()
+        image = images[0]
+        self.assertEqual("EXTERNAL_ID", image.external_id)
+        image.delete()
+
     def tearDown(self) -> None:
         projects = self.h.get_projects()
         for i in ["image.jpg", "tmp1.jpg"]:
