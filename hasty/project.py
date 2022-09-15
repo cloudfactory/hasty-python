@@ -429,6 +429,16 @@ class Project(HastyObject):
                              AutomatedLabelingJob.endpoint.format(project_id=self._id),
                              obj_params={"project_id": self.id})
 
+    def get_automated_labeling_job(self, job_id: str):
+        """
+        Get automated labeling jobs, list of :py:class:`~hasty.AutomatedLabelingJob` objects.
+
+        Args:
+            job_id (str): Automated labeling job id
+        """
+        res = self._requester.get(AutomatedLabelingJob.endpoint_job_id.format(project_id=self.id, job_id=job_id))
+        return AutomatedLabelingJob(self._requester, res, {"project_id": self.id})
+
     def create_automated_labeling_job(self, experiment_id: str, confidence_threshold: float = 0.8,
                                       max_detections_per_image: int = 100, num_images: int = 0,
                                       masker_threshold: float = 0.5, dataset_id: Optional[str] = None):
