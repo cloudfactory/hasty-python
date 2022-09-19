@@ -2,6 +2,7 @@ from collections import OrderedDict
 from typing import List, Union, Optional
 
 from .attribute import Attribute
+from .automated_labeling import AutomatedLabelingJob
 from .constants import ImageStatus, SemanticFormat, VALID_EXPORT_FORMATS, VALID_SEMANTIC_ORDER, \
     VALID_SEMANTIC_FORMATS, VALID_STATUSES
 from .dataset import Dataset
@@ -419,3 +420,39 @@ class Project(HastyObject):
         d = Attributer(self._requester, {"project_id": self._id})
         d.discover_model()
         return d
+
+    def get_automated_labeling_jobs(self):
+        """
+        Get automated labeling jobs, list of :py:class:`~hasty.AutomatedLabelingJob` objects.
+        """
+        return PaginatedList(AutomatedLabelingJob, self._requester,
+                             AutomatedLabelingJob.endpoint.format(project_id=self._id),
+                             obj_params={"project_id": self.id})
+
+    def get_automated_labeling_job(self, job_id: str):
+        """
+        Get automated labeling jobs, list of :py:class:`~hasty.AutomatedLabelingJob` objects.
+
+        Args:
+            job_id (str): Automated labeling job id
+        """
+        res = self._requester.get(AutomatedLabelingJob.endpoint_job_id.format(project_id=self.id, job_id=job_id))
+        return AutomatedLabelingJob(self._requester, res, {"project_id": self.id})
+
+    def create_automated_labeling_job(self, experiment_id: str, confidence_threshold: float = 0.8,
+                                      max_detections_per_image: int = 100, num_images: int = 0,
+                                      masker_threshold: float = 0.5, dataset_id: Optional[str] = None):
+        """
+        Create automated labeling job, returns :py:class:`~hasty.AutomatedLabelingJob` object.
+
+        Args:
+            experiment_id (str): ID of an experiment, that would be used for automated labeling
+            confidence_threshold (float, optional): Confidence threshold of the predictions that should be applied
+                                                    (default 0.8)
+            max_detections_per_image (int, optional): Max number of labels that should be created, default 100
+            num_images (int, optional): Total number of images that should be used for automated labeling (default all)
+            masker_threshold (float, optional): Threshold for mask head (default 0.5)
+            dataset_id (str, optional): Filter images by dataset
+        """
+        return AutomatedLabelingJob._create(self._requester, self._id, experiment_id, confidence_threshold,
+                                            max_detections_per_image, num_images, masker_threshold, dataset_id)
