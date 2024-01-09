@@ -117,6 +117,6 @@ class ExportJob(HastyObject):
             filename = self._meta.get('export_name', 'export') + '.zip'
             filepath = os.path.join(local_folder, filename)
             urllib.request.urlretrieve(url, filepath)
-            logging.info(f"File {filepath} saved")
+            logging.info(f"File {filepath} saved DUMMY")
         else:
             raise ValidationException.export_in_progress()
