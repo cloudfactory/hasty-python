@@ -12,6 +12,7 @@ from .label_utils import check_bbox_format, check_rle_mask
 
 
 C_LABELS_LIMIT = 100
+C_LABELS_TOOL_USED = "api"
 
 
 class Label(HastyObject):
@@ -183,7 +184,8 @@ class Label(HastyObject):
                          "polygon": label.get("polygon"),
                          "mask": label.get("mask"),
                          "z_index": label.get("z_index"),
-                         "external_id": label.get("external_id")})
+                         "external_id": label.get("external_id"),
+                         "tool_used": C_LABELS_TOOL_USED})
         res = requester.post(Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=data)
         new_labels = []
         for label in res["items"]:
@@ -204,7 +206,8 @@ class Label(HastyObject):
                          "polygon": label.get("polygon"),
                          "mask": label.get("mask"),
                          "z_index": label.get("z_index"),
-                         "external_id": label.get("external_id")})
+                         "external_id": label.get("external_id"),
+                         "tool_used": C_LABELS_TOOL_USED})
         res = requester.put(Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=data)
         updated_labels = []
         for label in res["items"]:
