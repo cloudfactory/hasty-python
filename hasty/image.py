@@ -141,7 +141,7 @@ class Image(HastyObject):
         filename = os.path.basename(filepath)
         url_data = Image._generate_sign_url(requester, project_id)
         with open(filepath, 'rb') as f:
-            requester.put(url_data['url'], data=f.read(), content_type="image/*")
+            requester.put(url_data['url'], data=f.read(), content_type="")
         res = requester.post(Image.endpoint.format(project_id=project_id),
                              json_data={"dataset_id": dataset_id,
                                         "filename": filename,
