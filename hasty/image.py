@@ -16,7 +16,7 @@ from .tag_class import TagClass
 
 class Image(HastyObject):
     endpoint = '/v1/projects/{project_id}/images'
-    endpoint_uploads = '/v1/projects/{project_id}/image_uploads'
+    endpoint_uploads = '/v1/projects/{project_id}/uploads'
     endpoint_image = '/v1/projects/{project_id}/images/{image_id}'
 
     def __repr__(self):
@@ -133,7 +133,7 @@ class Image(HastyObject):
 
     @staticmethod
     def _generate_sign_url(requester, project_id):
-        data = requester.post(Image.endpoint_uploads.format(project_id=project_id), json_data={"count": 1})
+        data = requester.get(Image.endpoint_uploads.format(project_id=project_id), query_params={"count": 1, "style": "simple"})
         return data["items"][0]
 
     @staticmethod
