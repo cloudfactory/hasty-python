@@ -133,7 +133,7 @@ class Image(HastyObject):
 
     @staticmethod
     def _generate_sign_url(requester, project_id):
-        data = requester.get(Image.endpoint_uploads.format(project_id=project_id), query_params={"count": 1, "style": "simple"})
+        data = requester.get(Image.endpoint_uploads.format(project_id=project_id), query_params={"count": 1})
         return data["items"][0]
 
     @staticmethod
