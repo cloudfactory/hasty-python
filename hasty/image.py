@@ -171,7 +171,7 @@ class Image(HastyObject):
                              obj_params={"project_id": self.project_id})
 
     def create_label(self, label_class: Union[LabelClass, str], bbox: List[int] = None, polygon: List[List[int]] = None,
-                     mask: List[int] = None, z_index: int = None, external_id: Optional[str] = None):
+                     mask: List[int] = None, z_index: int = 0, external_id: Optional[str] = None):
         """
         Create label
 
