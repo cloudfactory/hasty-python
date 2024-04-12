@@ -57,14 +57,25 @@ class TestTag(unittest.TestCase):
         self.assertEqual(2, len(tags), 'Should be two tag class assigned')
         # Assign same classes
         self.image.add_tags([tc1, tc2])
-        tags = self.image.get_tags()
-        self.assertEqual(2, len(tags), 'Still should be two tag class assigned')
+        original_tags = self.image.get_tags()
+        self.assertEqual(2, len(original_tags), 'Still should be two tag class assigned')
         # Delete one tag
-        self.image.delete_tags([tags[0]])
+        self.image.delete_tags([original_tags[0]])
         tags = self.image.get_tags()
         self.assertEqual(1, len(tags), 'Should be one tag class assigned')
-        # Delete another one tag
-        self.image.delete_tags([{"tag_id": tags[0].id}])
+        # Delete another tag by tag_class
+        self.image.delete_tags([tc1, tc2])
+        tags = self.image.get_tags()
+        self.assertEqual(0, len(tags), 'Should not be any tags assigned')
+        # Assign same classes
+        tags = self.image.add_tags([tc1, tc2])
+        self.assertEqual(2, len(tags), 'Should be two tag class assigned')
+        # Delete via object: tag_class_id
+        self.image.delete_tags([{"tag_class_id": tc1.id}])
+        tags = self.image.get_tags()
+        self.assertEqual(1, len(tags), 'Should be one tag class assigned')
+        # Delete via object: tag_id
+        self.image.delete_tags([{"tag_id": tag.id} for tag in tags])
         tags = self.image.get_tags()
         self.assertEqual(0, len(tags), 'Should not be any tags assigned')
 
