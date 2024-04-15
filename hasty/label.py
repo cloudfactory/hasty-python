@@ -243,7 +243,8 @@ class Label(HastyObject):
                                                "polygon": polygon,
                                                "mask": mask,
                                                "z_index": z_index,
-                                               "external_id": external_id}])
+                                               "external_id": external_id,
+                                               "tool_used": C_LABELS_TOOL_USED}])
         updated_label = updated_labels[0]
         self._class_id = updated_label.class_id
         self._bbox = updated_label.bbox
