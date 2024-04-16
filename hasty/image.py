@@ -16,7 +16,7 @@ from .tag_class import TagClass
 
 class Image(HastyObject):
     endpoint = '/v1/projects/{project_id}/images'
-    endpoint_uploads = '/v1/projects/{project_id}/image_uploads'
+    endpoint_uploads = '/v1/projects/{project_id}/uploads'
     endpoint_image = '/v1/projects/{project_id}/images/{image_id}'
 
     def __repr__(self):
@@ -133,7 +133,7 @@ class Image(HastyObject):
 
     @staticmethod
     def _generate_sign_url(requester, project_id):
-        data = requester.post(Image.endpoint_uploads.format(project_id=project_id), json_data={"count": 1})
+        data = requester.get(Image.endpoint_uploads.format(project_id=project_id), query_params={"count": 1})
         return data["items"][0]
 
     @staticmethod
@@ -141,7 +141,7 @@ class Image(HastyObject):
         filename = os.path.basename(filepath)
         url_data = Image._generate_sign_url(requester, project_id)
         with open(filepath, 'rb') as f:
-            requester.put(url_data['url'], data=f.read(), content_type="image/*")
+            requester.put(url_data['url'], data=f.read(), content_type="")
         res = requester.post(Image.endpoint.format(project_id=project_id),
                              json_data={"dataset_id": dataset_id,
                                         "filename": filename,
@@ -171,7 +171,7 @@ class Image(HastyObject):
                              obj_params={"project_id": self.project_id})
 
     def create_label(self, label_class: Union[LabelClass, str], bbox: List[int] = None, polygon: List[List[int]] = None,
-                     mask: List[int] = None, z_index: int = None, external_id: Optional[str] = None):
+                     mask: List[int] = None, z_index: int = 0, external_id: Optional[str] = None):
         """
         Create label
 
