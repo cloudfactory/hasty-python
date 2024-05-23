@@ -58,7 +58,7 @@ class Inference(HastyObject):
         if self._status != 'LOADED':
             raise InferenceException.model_not_loaded()
         if image_path is not None:
-            url_data = Image._generate_sign_url(self._requester, self._project_id)
+            url_data = HastyObject._generate_sign_url(self._requester, self._project_id)
             with open(image_path, 'rb') as f:
                 self._requester.put(url_data['url'], data=f.read(), content_type="image/*")
             upload_id = url_data['id']

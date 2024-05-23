@@ -1,3 +1,4 @@
+from hasty.activity import Activity, ActivityType
 from hasty.attribute import Attribute
 from hasty.client import Client
 from hasty.dataset import Dataset
@@ -9,6 +10,7 @@ from hasty.label_class import LabelClass
 from hasty.project import Project
 from hasty.tag import Tag
 from hasty.tag_class import TagClass
+from hasty.video import Video
 import hasty.label_utils as label_utils
 
 
@@ -23,6 +25,8 @@ __version__ = '0.3.7'
 VERSION = tuple(map(int_or_str, __version__.split('.')))
 
 __all__ = [
+    'Activity',
+    'ActivityType'
     'Attribute',
     'Attributer',
     'Client',
@@ -37,5 +41,6 @@ __all__ = [
     'SemanticSegmentor',
     'Tag',
     'TagClass',
-    'label_utils'
+    'Video',
+    'label_utils',
 ]

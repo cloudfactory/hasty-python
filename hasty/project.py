@@ -1,10 +1,11 @@
 from collections import OrderedDict
 from typing import List, Union, Optional
 
+from .activity import ActivityType
 from .attribute import Attribute
 from .automated_labeling import AutomatedLabelingJob
 from .constants import ImageStatus, SemanticFormat, VALID_EXPORT_FORMATS, VALID_SEMANTIC_ORDER, \
-    VALID_SEMANTIC_FORMATS, VALID_STATUSES
+    VALID_SEMANTIC_FORMATS, VALID_STATUSES, VALID_VIDEO_STATUSES, ProjectType, VideoStatus
 from .dataset import Dataset
 from .export_job import ExportJob
 from .exception import ValidationException
@@ -14,6 +15,7 @@ from .inference import Attributer, Detector, InstanceSegmentor, SemanticSegmento
 from .image import Image
 from .label_class import LabelClass
 from .tag_class import TagClass
+from .video import Video
 
 
 class Project(HastyObject):
@@ -68,11 +70,16 @@ class Project(HastyObject):
             self._description = data["description"]
 
     @staticmethod
-    def create(requester, workspace_id, name, description):
+    def create(requester, workspace_id, name, description, content_type: str = ProjectType.Image):
+        data = {"workspace_id": workspace_id,
+                "name": name,
+                "description": description}
+        if content_type == ProjectType.Video:
+            data["content_type"] = content_type
         res = requester.post(Project.endpoint,
-                             json_data={"workspace_id": workspace_id,
-                                        "name": name,
-                                        "description": description})
+                             json_data=data)
+        if content_type == ProjectType.Video:
+            return VideoProject(requester, res, {"workspace_id": workspace_id})
         return Project(requester, res, {"workspace_id": workspace_id})
 
     def edit(self, name, description):
@@ -137,6 +144,7 @@ class Project(HastyObject):
              - "IN PROGRESS"
              - "TO REVIEW"
              - "AUTO-LABELLED"
+             - "COMPLETED"
 
         """
         query_params = {}
@@ -456,3 +464,111 @@ class Project(HastyObject):
         """
         return AutomatedLabelingJob._create(self._requester, self._id, experiment_id, confidence_threshold,
                                             max_detections_per_image, num_images, masker_threshold, dataset_id)
+
+
+class VideoProject(Project):
+    @staticmethod
+    def create(requester, workspace_id, name, description):
+        return Project.create(requester, workspace_id, name, description, content_type=ProjectType.Video)
+
+    def export(self, name: str, export_format: str, dataset: Union[Dataset, str, List[Dataset], List[str]] = None,
+               video_status: Union[str, List[str]] = VideoStatus.Done, sign_urls: bool = False):
+        # TODO: Implement for video
+        ...
+
+    def upload_from_file(self, dataset, filepath):
+        """
+        Uploads video from the given filepath
+
+        Args:
+            dataset (`~hasty.Dataset`, str): Dataset object or id that the vide should belong to
+            filepath (str): Local path
+        """
+        dataset_id = dataset
+        if isinstance(dataset, Dataset):
+            dataset_id = dataset.id
+        return Video._upload_from_file(self._requester, self._id, dataset_id, filepath)
+
+    def upload_from_url(self, dataset: Union[Dataset, str], filename: str, url: str):
+        """
+        Uploads video from a given URL
+
+        Args:
+            dataset (`~hasty.Dataset`, str): Dataset object or id that the video should belong to
+            filename (str): Filename of the video
+            url (str): Video url
+        """
+        dataset_id = dataset
+        if isinstance(dataset, Dataset):
+            dataset_id = dataset.id
+        return Video._upload_from_url(self._requester, self._id, dataset_id, filename, url)
+
+    def get_videos(self, dataset=None, video_status=None):
+        """
+        Retrieves the list of projects videos.
+
+        Args:
+            dataset (str, `~hasty.Dataset`, list of str, list of `~hasty.Dataset`): filter videos by dataset
+            video_status (str, list of str): Filters videos by status, valid values are:
+
+             - "NEW"
+             - "DONE",
+             - "SKIPPED"
+             - "IN PROGRESS"
+             - "TO REVIEW"
+             - "COMPLETED"
+
+        """
+        query_params = {}
+        if dataset:
+            if isinstance(dataset, str):
+                query_params["dataset_id"] = dataset
+            elif isinstance(dataset, Dataset):
+                query_params["dataset_id"] = dataset.id
+            elif isinstance(dataset, list):
+                dataset_ids = []
+                for d in dataset:
+                    if isinstance(d, str):
+                        dataset_ids.append(d)
+                    elif isinstance(d, Dataset):
+                        dataset_ids.append(d.id)
+                query_params["dataset_id"] = ','.join(dataset_ids)
+        if video_status:
+            if isinstance(video_status, str):
+                query_params["video_status"] = video_status
+            elif isinstance(video_status, list):
+                video_statuses = []
+                for status in video_status:
+                    if status in VALID_VIDEO_STATUSES:
+                        video_statuses.append(status)
+                query_params["video_status"] = ','.join(video_statuses)
+        return PaginatedList(Video, self._requester,
+                             Video.endpoint.format(project_id=self._id), obj_params={"project_id": self.id},
+                             query_params=query_params)
+
+    def get_video(self, video_id: str):
+        """
+        Retrieves the video by its id.
+
+        Args:
+            video_id (str): Video ID
+        """
+        return Video._get_by_id(self._requester, self._id, video_id)
+
+    def get_activity_types(self):
+        """
+        Get label classes, list of :py:class:`~hasty.ActivityType` objects.
+        """
+        return PaginatedList(ActivityType, self._requester,
+                             ActivityType.endpoint.format(project_id=self._id),
+                             obj_params={"project_id": self.id})
+
+    def create_activity_type(self, name: str, color: Optional[str]):
+        """
+        Create tag class, returns :py:class:`~hasty.ActivityType` object.
+
+        Args:
+            name (str): Activity type name
+            color (str, optional): Color in HEX format #0f0f0faa
+        """
+        return ActivityType._create(self._requester, self._id, name, color)

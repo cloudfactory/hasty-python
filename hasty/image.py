@@ -16,7 +16,6 @@ from .tag_class import TagClass
 
 class Image(HastyObject):
     endpoint = '/v1/projects/{project_id}/images'
-    endpoint_uploads = '/v1/projects/{project_id}/uploads'
     endpoint_image = '/v1/projects/{project_id}/images/{image_id}'
 
     def __repr__(self):
@@ -132,14 +131,9 @@ class Image(HastyObject):
         return Image(requester, data, {"project_id": project_id})
 
     @staticmethod
-    def _generate_sign_url(requester, project_id):
-        data = requester.get(Image.endpoint_uploads.format(project_id=project_id), query_params={"count": 1})
-        return data["items"][0]
-
-    @staticmethod
     def _upload_from_file(requester, project_id, dataset_id, filepath, external_id: Optional[str] = None):
         filename = os.path.basename(filepath)
-        url_data = Image._generate_sign_url(requester, project_id)
+        url_data = HastyObject._generate_sign_url(requester, project_id)
         with open(filepath, 'rb') as f:
             requester.put(url_data['url'], data=f.read(), content_type="")
         res = requester.post(Image.endpoint.format(project_id=project_id),
