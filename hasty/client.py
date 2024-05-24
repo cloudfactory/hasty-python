@@ -1,8 +1,9 @@
 from typing import Union
 import uuid
 
+from .constants import ProjectType
 from .helper import PaginatedList
-from .project import Project
+from .project import Project, VideoProject
 from .workspace import Workspace
 from .requester import Requester
 
@@ -49,16 +50,18 @@ class Client:
         res = self._requester.get(Project.endpoint_project.format(project_id=project_id))
         return Project(self._requester, res)
 
-    def create_project(self, workspace: Union[str, Workspace], name: str, description: str = None) -> Project:
+    def create_project(self, workspace: Union[str, Workspace], name: str,
+                       description: str = None, content_type: str = ProjectType.Image) -> Union[Project, VideoProject]:
         """
-        Creates new project :py:class:`~hasty.Project`
+        Creates new project :py:class:`~hasty.Project` or :py:class:`~hasty.VideoProject`
 
         Arguments:
             workspace (:py:class:`~hasty.Workspace`, str): Workspace object or id which the project should belongs to
             name (str): Name of the project
             description (str, optional): Project description
+            content_type (str, optional): Type of the project. Default is image
         """
         workspace_id = workspace
         if isinstance(workspace, Workspace):
             workspace_id = workspace.id
-        return Project.create(self._requester, workspace_id, name, description)
+        return Project.create(self._requester, workspace_id, name, description, content_type)

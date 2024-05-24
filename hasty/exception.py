@@ -4,8 +4,15 @@ class ValidationException(Exception):
 
     @classmethod
     def export_in_progress(cls):
-        raise ValidationException("Export is still running")
+        return ValidationException("Export is still running")
 
+    @classmethod
+    def video_not_ready(cls):
+        return ValidationException("Video is not ready")
+
+    @classmethod
+    def invalid_activities(cls):
+        return ValidationException("activities must be a non-empty list of ActitivityType objects or IDs")
 
 class AuthenticationException(Exception):
     def __init__(self, message):
@@ -13,7 +20,7 @@ class AuthenticationException(Exception):
 
     @classmethod
     def failed_authentication(cls):
-        raise AuthenticationException("Authentication failed, check your API key")
+        return AuthenticationException("Authentication failed, check your API key")
 
 
 class AuthorisationException(Exception):
@@ -22,7 +29,7 @@ class AuthorisationException(Exception):
 
     @classmethod
     def permission_denied(cls):
-        raise AuthorisationException("Looks like service account doesn't have a permission to perform this operation")
+        return AuthorisationException("Looks like service account doesn't have a permission to perform this operation")
 
 
 class InsufficientCredits(Exception):
@@ -31,7 +38,7 @@ class InsufficientCredits(Exception):
 
     @classmethod
     def insufficient_credits(cls):
-        raise InsufficientCredits("Looks like you out of credits, please top up your account or contact Hasty")
+        return InsufficientCredits("Looks like you out of credits, please top up your account or contact Hasty")
 
 
 class NotFound(Exception):
@@ -40,7 +47,7 @@ class NotFound(Exception):
 
     @classmethod
     def object_not_found(cls):
-        raise NotFound("Referred object not found, please check your script")
+        return NotFound("Referred object not found, please check your script")
 
 
 class LimitExceededException(Exception):

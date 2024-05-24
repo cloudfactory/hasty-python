@@ -3,6 +3,7 @@ from operator import itemgetter
 
 
 class HastyObject:
+    endpoint_uploads = '/v1/projects/{project_id}/uploads'
 
     def __init__(self, requester, data, obj_params=None):
         self._requester = requester
@@ -37,3 +38,8 @@ class HastyObject:
 
     def _set_prop_values(self, data):
         raise NotImplementedError()
+
+    @classmethod
+    def _generate_sign_url(cls, requester, project_id):
+        data = requester.get(cls.endpoint_uploads.format(project_id=project_id), query_params={"count": 1})
+        return data["items"][0]

@@ -62,11 +62,12 @@ class Requester:
                                  cookies=self.cookies).json()
         return json_data
 
-    def post(self, endpoint, json_data=None, content_type='application/json'):
+    def post(self, endpoint, json_data=None, content_type='application/json', query_params=None):
         self.headers['Content-Type'] = content_type
         return self.request("POST", endpoint,
                             headers=self.headers,
                             json_data=json_data,
+                            params=query_params,
                             cookies=self.cookies).json()
 
     def put(self, endpoint, data=None, files=None, content_type='application/json', json_data=None):
