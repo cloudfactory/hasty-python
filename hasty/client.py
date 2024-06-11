@@ -40,13 +40,16 @@ class Client:
         """
         return PaginatedList(Project, self._requester, Project.endpoint)
 
-    def get_project(self, project_id):
+    def get_project(self, project_id: str, content_type: str = ProjectType.Image) -> Union[Project, VideoProject]:
         """
         Returns project :py:class:`~hasty.Project` by id
 
         Arguments:
             project_id (str): Project id
         """
+        if content_type == ProjectType.Video:
+            res = self._requester.get(VideoProject.endpoint_project.format(project_id=project_id))
+            return VideoProject(self._requester, res)
         res = self._requester.get(Project.endpoint_project.format(project_id=project_id))
         return Project(self._requester, res)
 
