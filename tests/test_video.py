@@ -5,6 +5,7 @@ import urllib.request
 
 from hasty.exception import ValidationException
 from hasty.constants import ProjectType
+from hasty.project import VideoProject
 from tests.utils import get_client, vid_url
 
 
@@ -15,6 +16,11 @@ class TestVideo(unittest.TestCase):
         ws0 = ws[0]
         self.project = self.h.create_project(ws0, "Test Project 1", content_type=ProjectType.Video)
         urllib.request.urlretrieve(vid_url, "video.mp4")
+
+    def test_video_project(self):
+        # Fetch video project by id
+        video_project = self.h.get_project(self.project.id)
+        self.assertIsInstance(video_project, VideoProject)
 
     def test_video(self):
         ds = self.project.create_dataset("ds")
