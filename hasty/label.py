@@ -103,7 +103,7 @@ class Label(HastyObject):
         self._bbox = None
         self._polygon = None
         self._mask = None
-        self._z_index = None
+        self._z_index = 0
         self._external_id = None
 
     def _set_prop_values(self, data):
@@ -183,7 +183,7 @@ class Label(HastyObject):
                          "bbox": label.get("bbox"),
                          "polygon": label.get("polygon"),
                          "mask": label.get("mask"),
-                         "z_index": label.get("z_index"),
+                         "z_index": label.get("z_index") or 0,
                          "external_id": label.get("external_id"),
                          "tool_used": C_LABELS_TOOL_USED})
         res = requester.post(Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=data)
@@ -205,7 +205,7 @@ class Label(HastyObject):
                          "bbox": label.get("bbox"),
                          "polygon": label.get("polygon"),
                          "mask": label.get("mask"),
-                         "z_index": label.get("z_index"),
+                         "z_index": label.get("z_index") or 0,
                          "external_id": label.get("external_id"),
                          "tool_used": C_LABELS_TOOL_USED})
         res = requester.put(Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=data)
