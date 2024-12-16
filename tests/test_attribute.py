@@ -28,7 +28,7 @@ class TestAttribute(unittest.TestCase):
         attr = self.project.create_attribute("attr1", "SELECTION", "IMAGE", "Some desc", 2, ["v1", "v2", "v3"])
         self.validate_attribute(attr, "attr1", "SELECTION", "Some desc", 2, ["v1", "v2", "v3"])
         # Update attribute
-        attr.edit("attr2", "SELECTION", "Desc2", 3, ["v1", "v2"])
+        attr.edit("attr2", "SELECTION", "IMAGE", "Desc2", 3, ["v1", "v2"])
         self.validate_attribute(attr, "attr2", "SELECTION", "IMAGE", "Desc2", 3, ["v1", "v2"])
         # Check get attributes
         attributes = self.project.get_attributes()

@@ -112,7 +112,7 @@ class Attribute(HastyObject):
         res = requester.post(Attribute.endpoint.format(project_id=project_id), json_data=json_data)
         return Attribute(requester, res, {"project_id": project_id})
 
-    def edit(self, name: str, attribute_type: str, description: Optional[str] = None,
+    def edit(self, name: str, attribute_type: str, subject_type: str, description: Optional[str] = None,
              norder: Optional[float] = None, values: List[str] = None):
         """
         Edit attribute properties
@@ -121,12 +121,14 @@ class Attribute(HastyObject):
             Args:
             name (str): Attribute name
             attribute_type (str): Attribute type ['SELECTION', 'MULTIPLE-SELECTION', 'TEXT', 'INT', 'FLOAT', 'BOOL']
+            subject_type (str): Subject type ['IMAGE', 'VIDEO', 'LABEL', 'SEGMENT']
             description (str, optional): Attrbute description
             norder (float, optional): Order in the Hasty tool
             values (list of str): List of values for SELECTION and MULTIPLE-SELECTION attribute type
         """
         json_data = {"name": name,
                      "type": attribute_type,
+                     "subject_type": subject_type,
                      "description": description,
                      "norder": norder,
                      "values": [{"value": v} for v in values]}
