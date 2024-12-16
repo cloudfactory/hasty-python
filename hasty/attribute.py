@@ -90,17 +90,21 @@ class Attribute(HastyObject):
             self._values = data["values"]
 
     @staticmethod
-    def validate_type(attribute_type):
+    def validate_types(attribute_type, subject_type):
         if attribute_type not in ['SELECTION', 'MULTIPLE-SELECTION', 'TEXT', 'INT', 'FLOAT', 'BOOL']:
             raise ValidationException('Attribute type should be one of the following '
                                       '[SELECTION, MULTIPLE-SELECTION, TEXT, INT, FLOAT, BOOL]')
+        if subject_type not in ["IMAGE", "VIDEO", "LABEL", "SEGMENT"]:
+            raise ValidationException("Subject type should be one of the following "
+                                      "[IMAGE, VIDEO, LABEL, SEGMENT]")
 
     @staticmethod
-    def create(requester, project_id: str, name: str, attribute_type: str, description: Optional[str] = None,
+    def create(requester, project_id: str, name: str, attribute_type: str, subject_type: str, description: Optional[str] = None,
                norder: Optional[float] = None, values: List[str] = None):
-        Attribute.validate_type(attribute_type)
+        Attribute.validate_types(attribute_type, subject_type)
         json_data = {"name": name,
                      "type": attribute_type,
+                     "subject_type": subject_type,
                      "description": description,
                      "values": [{"value": v} for v in values],
                      "norder": norder}

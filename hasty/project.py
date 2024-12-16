@@ -283,7 +283,7 @@ class Project(HastyObject):
                              Attribute.endpoint.format(project_id=self._id),
                              obj_params={"project_id": self.id})
 
-    def create_attribute(self, name: str, attribute_type: str, description: Optional[str] = None,
+    def create_attribute(self, name: str, attribute_type: str, subject_type: str, description: Optional[str] = None,
                norder: Optional[float] = None, values: List[str] = None):
         """
         Create attribute, returns :py:class:`~hasty.Attribute` object.
@@ -291,11 +291,12 @@ class Project(HastyObject):
         Args:
             name (str): Attribute name
             attribute_type (str): Attribute type ['SELECTION', 'MULTIPLE-SELECTION', 'TEXT', 'INT', 'FLOAT', 'BOOL']
+            subject_type (str): Subject type ['IMAGE', 'VIDEO', 'LABEL', 'SEGMENT']
             description (str, optional): Attrbute description
             norder (float, optional): Order in the Hasty tool
             values (list of str): List of values for SELECTION and MULTIPLE-SELECTION attribute type
         """
-        return Attribute.create(self._requester, self._id, name, attribute_type, description, norder, values)
+        return Attribute.create(self._requester, self._id, name, attribute_type, subject_type, description, norder, values)
 
     def get_attribute_classes(self):
         """
