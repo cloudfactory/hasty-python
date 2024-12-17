@@ -1,6 +1,9 @@
+from typing import Union
 from collections import OrderedDict
 
+
 from .hasty_object import HastyObject
+from .bucket import DummyCreds, GCSCreds, S3Creds, AZCreds, Bucket
 
 
 class Workspace(HastyObject):
@@ -34,3 +37,13 @@ class Workspace(HastyObject):
             self._id = data["id"]
         if "name" in data:
             self._name = data["name"]
+
+    def create_bucket(self, name: str, credentials: Union[DummyCreds, GCSCreds, S3Creds, AZCreds]):
+        """
+        Create a new bucket in the workspace.
+
+        Args:
+            name (str): Name of the bucket.
+            credentials (Credentials): Credentials object.
+        """
+        return Bucket._create_bucket(self._requester, self._id, name, credentials)
