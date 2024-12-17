@@ -215,6 +215,25 @@ class Project(HastyObject):
         return Image._upload_from_url(self._requester, self._id, dataset_id, filename, url, copy_original=copy_original,
                                       external_id=external_id)
 
+    def upload_from_bucket(self, dataset: Union[Dataset, str], filename: str, path: str, bucket_id: str, copy_original: bool = False,
+                            external_id: Optional[str] = None):
+        """
+        Uploads image from the given bucket
+
+        Args:
+            dataset (`~hasty.Dataset`, str): Dataset object or id that the image should belongs to
+            filename (str): Filename of the image
+            path (str): Path in the bucket
+            bucket_id (str): Bucket ID (format: UUID)
+            copy_original (str): If True Hasty makes a copy of the image. Default False.
+            external_id (str): External ID (optional)
+        """
+        dataset_id = dataset
+        if isinstance(dataset, Dataset):
+            dataset_id = dataset.id
+        return Image._upload_from_bucket(self._requester, self._id, dataset_id, filename, path, bucket_id, copy_original=copy_original,
+                                      external_id=external_id)
+
     def get_label_classes(self):
         """
         Get label classes, list of :py:class:`~hasty.LabelClass` objects.
