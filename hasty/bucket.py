@@ -1,12 +1,19 @@
 from collections import OrderedDict
-from typing import Union
+from dataclasses import dataclass
+from typing import Union, Protocol
 
 from .constants import BucketProviders
 from .hasty_object import HastyObject
 
-class Credentials:
-    pass
+@dataclass
+class Credentials(Protocol):
+    def get_credentials(self):
+        raise NotImplementedError
 
+    def cloud_provider(self):
+        raise NotImplementedError
+
+@dataclass
 class DummyCreds(Credentials):
     secret: str
 
@@ -16,6 +23,7 @@ class DummyCreds(Credentials):
     def cloud_provider(self):
         return BucketProviders.DUMMY
 
+@dataclass
 class GCSCreds(Credentials):
     bucket: str
     key_json: str
@@ -26,6 +34,7 @@ class GCSCreds(Credentials):
     def cloud_provider(self):
         return BucketProviders.GCS
 
+@dataclass
 class S3Creds(Credentials):
     bucket: str
     role: str
@@ -36,6 +45,7 @@ class S3Creds(Credentials):
     def cloud_provider(self):
         return BucketProviders.S3
 
+@dataclass
 class AZCreds(Credentials):
     account_name: str
     secret_access_key: str

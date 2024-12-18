@@ -25,15 +25,13 @@ class TestBucketManagement(unittest.TestCase):
         self.assertEqual("s3", res.cloud_provider)
 
     def test_import_image(self):
-        creds = S3Creds()
-        creds.bucket = "hasty-public-bucket-mounter"
-        creds.role = "arn:aws:iam::045521589961:role/hasty-public-bucket-mounter"
-        bucket = self.workspace.create_bucket("test_bucket", creds)
-        bucket_id = bucket.id
+        # create a bucket
+        bucket = self.workspace.create_bucket("test_bucket", S3Creds(bucket="hasty-public-bucket-mounter", role="arn:aws:iam::045521589961:role/hasty-public-bucket-mounter"))
 
-        # Test import image
+        # Import an image from the bucket
         dataset = self.project.create_dataset("ds2")
-        img = self.project.upload_from_bucket(dataset, "1645001880-075718046bb2fbf9b8c35d6e88571cd7f91ca1a1.png", "dummy/1645001880-075718046bb2fbf9b8c35d6e88571cd7f91ca1a1.png", bucket_id)
+        img = self.project.upload_from_bucket(dataset, "1645001880-075718046bb2fbf9b8c35d6e88571cd7f91ca1a1.png",
+                                              "dummy/1645001880-075718046bb2fbf9b8c35d6e88571cd7f91ca1a1.png", bucket.id)
         self.assertEqual("1645001880-075718046bb2fbf9b8c35d6e88571cd7f91ca1a1.png", img.name)
         self.assertEqual("ds2", img.dataset_name)
         self.assertIsNotNone(img.id)
