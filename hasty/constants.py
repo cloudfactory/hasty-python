@@ -41,6 +41,13 @@ class SemanticOrder:
     CLASS_ORDER = "class_order"
 
 
+class BucketProviders:
+    GCS = "gcs"
+    S3 = "s3"
+    AZ = "az"
+    DUMMY = "dummy"
+
+
 WAIT_INTERVAL_SEC = 10
 
 VALID_STATUSES = [ImageStatus.New, ImageStatus.Done, ImageStatus.Skipped, ImageStatus.InProgress, ImageStatus.ToReview,

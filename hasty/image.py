@@ -156,6 +156,18 @@ class Image(HastyObject):
         return Image(requester, res, {"project_id": project_id,
                                       "dataset_id": dataset_id})
 
+    @staticmethod
+    def _upload_from_bucket(requester, project_id, dataset_id, filename, path, bucket_id, copy_original=False,
+                            external_id: Optional[str] = None):
+        res = requester.post(Image.endpoint.format(project_id=project_id),
+                             json_data={"dataset_id": dataset_id,
+                                        "url": path,
+                                        "filename": filename,
+                                        "bucket_id": bucket_id,
+                                        "copy_original": copy_original,
+                                        "external_id": external_id})
+        return Image(requester, res, {"project_id": project_id,
+                                      "dataset_id": dataset_id})
     def get_labels(self):
         """
         Returns image labels (list of `~hasty.Label` objects)
