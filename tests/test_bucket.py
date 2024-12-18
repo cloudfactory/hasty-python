@@ -1,6 +1,6 @@
 import unittest
 
-from utils import get_client
+from tests.utils import get_client
 
 from hasty.bucket import S3Creds
 
