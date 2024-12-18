@@ -16,10 +16,7 @@ class TestBucketManagement(unittest.TestCase):
 
     def test_bucket_creation(self):
         ws = self.h.get_workspaces()[0]
-        creds = S3Creds()
-        creds.bucket = "hasty-public-bucket-mounter"
-        creds.role = "arn:aws:iam::045521589961:role/hasty-public-bucket-mounter"
-        res = ws.create_bucket("test_bucket", creds)
+        res = ws.create_bucket("test_bucket", S3Creds(bucket="hasty-public-bucket-mounter", role="arn:aws:iam::045521589961:role/hasty-public-bucket-mounter"))
         self.assertIsNotNone(res.id)
         self.assertEqual("test_bucket", res.name)
         self.assertEqual("s3", res.cloud_provider)
