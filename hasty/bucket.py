@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from typing import Union
 
-from constants import BucketProviders
+from .constants import BucketProviders
 from .hasty_object import HastyObject
 
 class Credentials:
