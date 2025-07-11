@@ -20,7 +20,7 @@ class Label(HastyObject):
     endpoint_project = '/v1/projects/{project_id}/labels'
 
     def __repr__(self):
-        return self.get__repr__(OrderedDict({"id": self._id, "bbox": self._bbox, "polygon": self._polygon}))
+        return self.get__repr__(OrderedDict({"id": self._id, "bbox": self._bbox, "polygon": self._polygon, "mask": self._mask,}))
 
     def __iter__(self):
         yield 'id', self._id
