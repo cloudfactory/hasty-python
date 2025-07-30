@@ -14,6 +14,10 @@ class ValidationException(Exception):
     def invalid_activities(cls):
         return ValidationException("activities must be a non-empty list of ActitivityType objects or IDs")
 
+    @classmethod
+    def export_already_done_or_canceled(cls):
+        return ValidationException("Export job is already done or canceled, cannot cancel it again")
+
 class AuthenticationException(Exception):
     def __init__(self, message):
         self.message = message
