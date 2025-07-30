@@ -50,6 +50,9 @@ class Requester:
         if response.status_code == 404:
             raise NotFound.object_not_found()
 
+        if response.status_code == 422:
+            raise ValidationException(response.json().get("message"))
+
         if response.status_code > 299:
             response.raise_for_status()
 
@@ -99,7 +102,6 @@ class Requester:
                                 headers=self.headers,
                                 json_data=json_data,
                                 cookies=self.cookies)
-
-        if response.status_code != 204:
+        if response.status_code not in [202, 204]:
             # TODO Handle different status codes
             raise Exception("Something went wrong {}", response, response.text)

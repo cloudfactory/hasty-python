@@ -14,6 +14,7 @@ from .requester import Requester
 class ExportJob(HastyObject):
     endpoint = '/v1/projects/{project_id}/exports'
     endpoint_export = '/v1/projects/{project_id}/exports/{export_id}'
+    endpoint_job = '/v2/jobs/{job_id}'
 
     def __repr__(self):
         return self.get__repr__(OrderedDict({"id": self._id, "status": self._status}))
@@ -118,5 +119,17 @@ class ExportJob(HastyObject):
             filepath = os.path.join(local_folder, filename)
             urllib.request.urlretrieve(url, filepath)
             logging.info(f"File {filepath} saved")
-        else:
+        elif self._status in ['INIT', 'RUNNING']:
             raise ValidationException.export_in_progress()
+        else:
+            raise ValidationException(f"Export job is in {self._status} state, cannot download")
+
+    def cancel(self):
+        """
+        Cancels the export job.
+        """
+        if self._status in ['DONE', 'FAILED', 'CANCELED']:
+            raise ValidationException.export_already_done_or_canceled()
+        self._requester.delete(ExportJob.endpoint_job.format(job_id=self._id))
+        self._status = "CANCELED"
+        return self
