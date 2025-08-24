@@ -183,7 +183,7 @@ class Label(HastyObject):
                          "bbox": label.get("bbox"),
                          "polygon": label.get("polygon"),
                          "mask": label.get("mask"),
-                         "z_index": label.get("z_index"),
+                         "z_index": label.get("z_index", 0),
                          "external_id": label.get("external_id"),
                          "tool_used": C_LABELS_TOOL_USED})
         res = requester.post(Label.endpoint_image.format(project_id=project_id, image_id=image_id), json_data=data)

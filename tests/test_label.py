@@ -55,6 +55,29 @@ class TestLabel(unittest.TestCase):
         labels = self.image.get_labels()
         self.assertEqual(0, len(labels))
 
+    def test_labels(self):
+        labels = self.image.get_labels()
+        self.assertEqual(0, len(labels))
+        # Label with specified z_index
+        bbox1 = [10, 10, 50, 50]
+        poly1 = [[10, 20], [20, 44], [10, 15]]
+        z_index1 = 3
+        # Label with unspecified z_index
+        bbox2 = [10, 10, 50, 50]
+        poly2 = [[10, 20], [20, 44], [10, 15]]
+        z_index2 = None
+        # Bulk create labels
+        _ = self.image.create_labels(
+            {"class_id": self.label_class.id, "bbox": bbox1, "polygon": poly1, "mask": None, "z_index": z_index1},
+            {"class_id": self.label_class.id, "bbox": bbox2, "polygon": poly2, "mask": None, "z_index": z_index2}
+        )
+        labels = self.image.get_labels()
+        self.assertEqual(2, len(labels))
+        for label in labels:
+            label.delete()
+        labels = self.image.get_labels()
+        self.assertEqual(0, len(labels))
+    
     def test_external_id_for_label(self):
         # Create label
         bbox = [10, 10, 50, 50]
